@@ -1,0 +1,114 @@
+{
+  "user": {
+    "_id": "61477a5c13782c2ea6e9e488",
+    "image": null,
+    "secondName": "secondname",
+    "surname": "surname",
+    "name": "jake"
+  },
+  "profile": {
+    "name": "jake",
+    "surname": "surname",
+    "secondName": "secondName",
+    "image": "https://static.productionready.io/images/smiley-cyrus.jpg"
+  },
+  "product": {
+    "slug": "product-slug",
+    "title": "product",
+    "price": "price",
+    "active": true,
+    "categoryId": "categoryId",
+    "composition": "composition",
+    "weight": 100,
+    "images": [
+      "https://static.productionready.io/images/smiley-cyrus.jpg",
+      "https://static.productionready.io/images/smiley-cyrus.jpg",
+      "https://static.productionready.io/images/smiley-cyrus.jpg"
+    ],
+    "description": "Ever wonder how?",
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "favorited": false,
+    "favoritesCount": 0
+  },
+  "category": {
+    "slug": "category-slug",
+    "title": "category",
+    "products": [
+      {
+        "productId": "productId"
+      }
+    ],
+    "active": true,
+    "image": "https://static.productionready.io/images/smiley-cyrus.jpg",
+    "createdAt": "2016-02-18T03:22:56.637Z"
+  },
+  "basket": {
+    "id": "id",
+    "products": [
+      {
+        "productId": "productId",
+        "count": 10
+      }
+    ],
+    "total": 100,
+    "userId": "userId",
+    "discount": 30,
+    "coupon": "couponId",
+    "delivery": false,
+    "createdAt": "2016-02-18T03:22:56.637Z"
+  },
+  "order": {
+    "id": "id",
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "basket": "basketId",
+    "client": "clientId",
+    "orderNumber": "orderNumber",
+    "deliveryDate": "2016-02-18T03:22:56.637Z",
+    "street": "street",
+    "house": "house",
+    "building": "building",
+    "apartment": 5,
+    "addressComment": "addressComment",
+    "stageId": "stageId",
+    "coupon": "couponId",
+    "guestName": "guestName",
+    "phone": "phone",
+    "causeRejected": "causeRejected",
+    "payType": "payType",
+    "amountMoney": 1000,
+    "wishes": "wishes"
+  },
+  "place": {
+    "title": "place",
+    "address": "address",
+    "info": "info",
+    "email": "email",
+    "phone": "phone",
+    "director": "director",
+    "description": "description",
+    "createdAt": "2016-02-18T03:22:56.637Z"
+  },
+  "feedback": {
+    "name": "name",
+    "email": "email",
+    "subject": "subject",
+    "message": "message",
+    "agreement": true,
+    "stageId": "stageId",
+    "createdAt": "2016-02-18T03:22:56.637Z"
+  },
+  "coupon": {
+    "secret": "secret",
+    "expire": "2016-02-18T03:22:56.637Z",
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "type": "type",
+    "count": 10,
+    "active": true
+  },
+  "stage": {
+    "title": "title",
+    "color": "color",
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "active": true
+  }
+}

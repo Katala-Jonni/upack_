@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  fradmin:
+    build:
+      context: ./fradmin
+      dockerfile: Dockerfile.dev
+    command: npm run dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./fradmin/src:/usr/src/app/src
+  api:
+    command: npm run dev
+    volumes:
+    - ./api/src:/usr/src/app/src
+  nginx:
+    volumes:
+      - ./nginx/nginx.conf.dev:/etc/nginx/conf.d/nginx.conf
