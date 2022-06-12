@@ -25,6 +25,11 @@ import { ChevronRight as ChevronRightIcon } from '../../../icons/chevron-right';
 import { Image as ImageIcon } from '../../../icons/image';
 import { Scrollbar } from '../../scrollbar';
 import { SeverityPill } from '../../severity-pill';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { startEditCategory } from '../../../modules/Category';
+import CategoryEditForm from '../../../pages/dashboard/products/categoryEditForm';
+import {status} from '../../../utils/category';
 
 const categoryOptions = [
   {
@@ -64,6 +69,31 @@ export const CategoryListTable = (props) => {
     ...other
   } = props;
   const [openProduct, setOpenProduct] = useState(null);
+  const [name, setName] = useState('');
+  const minLengthName = 3;
+  const formik = useFormik({
+    initialValues: {
+      name: ''
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().min(4).max(255).required('Укажите наименование категории')
+    }),
+    onSubmit: async (values, helpers) => {
+      try {
+        // NOTE: Make API request
+        // if (name && name.length > minLengthName) {
+        //   await startEditCategory({ values, toast });
+        // }
+        console.log('еусе');
+      } catch (err) {
+        console.error(err);
+        toast.error('Что-то пошло не так! Повторите.');
+        helpers.setStatus({ success: false });
+        helpers.setErrors({ submit: err.message });
+        helpers.setSubmitting(false);
+      }
+    }
+  });
 
   const handleOpenProduct = (productId) => {
     setOpenProduct((prevValue) => (prevValue === productId ? null : productId));
@@ -99,13 +129,14 @@ export const CategoryListTable = (props) => {
           </TableHead>
           <TableBody>
             {products.map((product) => {
-              const open = product.id === openProduct;
+              const open = product._id === openProduct;
+              // const open = product.id === openProduct;
 
               return (
-                <Fragment key={product.id}>
+                <Fragment key={product._id}>
+                {/*<Fragment key={product.id}>*/}
                   <TableRow
                     hover
-                    key={product.id}
                   >
                     <TableCell
                       padding="checkbox"
@@ -124,7 +155,8 @@ export const CategoryListTable = (props) => {
                         })
                       }}
                     >
-                      <IconButton onClick={() => handleOpenProduct(product.id)}>
+                      <IconButton onClick={() => handleOpenProduct(product._id)}>
+                      {/*<IconButton onClick={() => handleOpenProduct(product.id)}>*/}
                         {open
                           ? <ChevronDownIcon fontSize="small"/>
                           : <ChevronRightIcon fontSize="small"/>}
@@ -177,20 +209,24 @@ export const CategoryListTable = (props) => {
                           }}
                         >
                           <Typography variant="subtitle2">
-                            {product.name}
+                            {`${product.title[0].toUpperCase()}${product.title.slice(1)}`}
+                            {/*{product.name}*/}
                           </Typography>
-                          <Typography
-                            color="textSecondary"
-                            variant="body2"
-                          >
-                            in {product.category}
-                          </Typography>
+                          {/*<Typography*/}
+                          {/*  color="textSecondary"*/}
+                          {/*  variant="body2"*/}
+                          {/*>*/}
+                          {/*  in {product.title}*/}
+                          {/*  /!*in {product.category}*!/*/}
+                          {/*</Typography>*/}
                         </Box>
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <SeverityPill color={product.status === 'active' ? 'success' : 'warning'}>
-                        {product.status === 'active' ? 'Активна' : 'Неактивна'}
+                      <SeverityPill color={product.active === status.active ? 'success' : 'warning'}>
+                      {/*<SeverityPill color={product.status === 'active' ? 'success' : 'warning'}>*/}
+                        {product.active === status.active ? 'Активна' : 'Неактивна'}
+                        {/*{product.status === 'active' ? 'Активна' : 'Неактивна'}*/}
                       </SeverityPill>
                     </TableCell>
                   </TableRow>
@@ -212,79 +248,88 @@ export const CategoryListTable = (props) => {
                           }
                         }}
                       >
-                        <CardContent>
-                          <Grid
-                            container
-                            spacing={3}
-                          >
-                            <Grid
-                              item
-                              // md={6}
-                              xs={12}
-                            >
-                              <Typography variant="h6">
-                                Основная информация
-                              </Typography>
-                              <Divider sx={{ my: 2 }}/>
-                              <Grid
-                                container
-                                spacing={3}
-                              >
-                                <Grid
-                                  item
-                                  md={6}
-                                  xs={12}
-                                >
-                                  <TextField
-                                    defaultValue={product.name}
-                                    fullWidth
-                                    label="Наименование"
-                                    name="name"
-                                  />
-                                </Grid>
-                                <Grid
-                                  item
-                                  md={6}
-                                  xs={12}
-                                  sx={{
-                                    alignItems: 'center',
-                                    display: 'flex'
-                                  }}
-                                >
-                                  <Switch/>
-                                  <Typography variant="subtitle2">
-                                    Активна?
-                                  </Typography>
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        </CardContent>
-                        <Divider/>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            px: 2,
-                            py: 1
-                          }}
-                        >
-                          <Button
-                            onClick={handleUpdateProduct}
-                            sx={{ m: 1 }}
-                            type="submit"
-                            variant="contained"
-                          >
-                            Изменить
-                          </Button>
-                          <Button
-                            onClick={handleCancelEdit}
-                            sx={{ m: 1 }}
-                            variant="outlined"
-                          >
-                            Отмена
-                          </Button>
-                        </Box>
+                        <CategoryEditForm
+                        product={product}
+                        handleCancelEdit={handleCancelEdit}
+                        />
+                        {/*<form*/}
+                        {/*  onSubmit={formik.handleSubmit}*/}
+                        {/*>*/}
+                        {/*  <CardContent>*/}
+                        {/*    <Grid*/}
+                        {/*      container*/}
+                        {/*      spacing={3}*/}
+                        {/*    >*/}
+                        {/*      <Grid*/}
+                        {/*        item*/}
+                        {/*        // md={6}*/}
+                        {/*        xs={12}*/}
+                        {/*      >*/}
+                        {/*        <Typography variant="h6">*/}
+                        {/*          Основная информация*/}
+                        {/*        </Typography>*/}
+                        {/*        <Divider sx={{ my: 2 }}/>*/}
+                        {/*        <Grid*/}
+                        {/*          container*/}
+                        {/*          spacing={3}*/}
+                        {/*        >*/}
+                        {/*          <Grid*/}
+                        {/*            item*/}
+                        {/*            md={6}*/}
+                        {/*            xs={12}*/}
+                        {/*          >*/}
+                        {/*            <TextField*/}
+                        {/*              defaultValue={product.title}*/}
+                        {/*              // defaultValue={product.name}*/}
+                        {/*              fullWidth*/}
+                        {/*              label="Наименование"*/}
+                        {/*              name="name"*/}
+                        {/*            />*/}
+                        {/*          </Grid>*/}
+                        {/*          <Grid*/}
+                        {/*            item*/}
+                        {/*            md={6}*/}
+                        {/*            xs={12}*/}
+                        {/*            sx={{*/}
+                        {/*              alignItems: 'center',*/}
+                        {/*              display: 'flex'*/}
+                        {/*            }}*/}
+                        {/*          >*/}
+                        {/*            <Switch defaultChecked={product.active === 'active'}/>*/}
+                        {/*            <Typography variant="subtitle2">*/}
+                        {/*              Активна?*/}
+                        {/*            </Typography>*/}
+                        {/*          </Grid>*/}
+                        {/*        </Grid>*/}
+                        {/*      </Grid>*/}
+                        {/*    </Grid>*/}
+                        {/*  </CardContent>*/}
+                        {/*  <Divider/>*/}
+                        {/*  <Box*/}
+                        {/*    sx={{*/}
+                        {/*      display: 'flex',*/}
+                        {/*      flexWrap: 'wrap',*/}
+                        {/*      px: 2,*/}
+                        {/*      py: 1*/}
+                        {/*    }}*/}
+                        {/*  >*/}
+                        {/*    <Button*/}
+                        {/*      // onClick={handleUpdateProduct}*/}
+                        {/*      sx={{ m: 1 }}*/}
+                        {/*      type="submit"*/}
+                        {/*      variant="contained"*/}
+                        {/*    >*/}
+                        {/*      Изменить*/}
+                        {/*    </Button>*/}
+                        {/*    <Button*/}
+                        {/*      onClick={handleCancelEdit}*/}
+                        {/*      sx={{ m: 1 }}*/}
+                        {/*      variant="outlined"*/}
+                        {/*    >*/}
+                        {/*      Отмена*/}
+                        {/*    </Button>*/}
+                        {/*  </Box>*/}
+                        {/*</form>*/}
                       </TableCell>
                     </TableRow>
                   )}

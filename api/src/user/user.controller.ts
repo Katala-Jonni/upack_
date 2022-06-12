@@ -33,7 +33,8 @@ export class UserController {
 
   @Get('user')
   @UseGuards(JwtAuthGuard)
-  @Roles(RolesEnum.user)
+  @Roles(RolesEnum.admin)
+  // @Roles(RolesEnum.user)
   async getCurrentUser(@User() user: UserType): Promise<UserCurrentInterface> {
     return this.userService.buildCurrentUserResponse(user);
   }

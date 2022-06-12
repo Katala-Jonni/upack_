@@ -7,17 +7,20 @@ import { DashboardLayout } from '../../../components/dashboard/dashboard-layout'
 import { gtm } from '../../../lib/gtm';
 import { CategoryCreateForm } from '../../../components/dashboard/category/category-create-form';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { routes } from '../../../api/routes';
 
 const CategoryCreate = () => {
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
 
+  const {dashboard, products, category} = routes;
+
   return (
     <>
       <Head>
         <title>
-          Dashboard: Product Create | Material Kit Pro
+          Добавить новую категорию
         </title>
       </Head>
       <Box
@@ -30,7 +33,7 @@ const CategoryCreate = () => {
         <Container maxWidth="md">
           <Box sx={{ mb: 4 }}>
             <NextLink
-              href="/dashboard/products/category"
+              href={`${dashboard}${products}${category}`}
               passHref
             >
               <Link

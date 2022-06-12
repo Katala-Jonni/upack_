@@ -7,5 +7,6 @@ export const routes = {
   category: '/category',
   products: '/products',
   product: '/product',
-  order: '/order'
+  order: '/order',
+  dashboard: '/dashboard'
 };

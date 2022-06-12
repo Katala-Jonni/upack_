@@ -14,10 +14,20 @@ import { Plus as PlusIcon } from '../../../icons/plus';
 import { gtm } from '../../../lib/gtm';
 import { CategoryListFilters } from '../../../components/dashboard/category/category-list-filters';
 import { CategoryListTable } from '../../../components/dashboard/category/category-list-table';
+import { useAction } from '../../../hooks/use-actions';
+import { useSelector } from 'react-redux';
 
 const applyFilters = (products, filters) => products.filter((product) => {
+  // if (filters.name) {
+  //   const nameMatched = product.name.toLowerCase().includes(filters.name.toLowerCase());
+  //
+  //   if (!nameMatched) {
+  //     return false;
+  //   }
+  // }
+
   if (filters.name) {
-    const nameMatched = product.name.toLowerCase().includes(filters.name.toLowerCase());
+    const nameMatched = product.title.toLowerCase().includes(filters.name.toLowerCase());
 
     if (!nameMatched) {
       return false;
@@ -25,17 +35,24 @@ const applyFilters = (products, filters) => products.filter((product) => {
   }
 
   // It is possible to select multiple category options
-  if (filters.category?.length > 0) {
-    const categoryMatched = filters.category.includes(product.category);
-
-    if (!categoryMatched) {
-      return false;
-    }
-  }
+  // if (filters.category?.length > 0) {
+  //   const categoryMatched = filters.category.includes(product.category);
+  //
+  //   if (!categoryMatched) {
+  //     return false;
+  //   }
+  // }
 
   // It is possible to select multiple status options
+  // if (filters.status?.length > 0) {
+  //   const statusMatched = filters.status.includes(product.status);
+  //
+  //   if (!statusMatched) {
+  //     return false;
+  //   }
+  // }
   if (filters.status?.length > 0) {
-    const statusMatched = filters.status.includes(product.status);
+    const statusMatched = filters.status.includes(product.active);
 
     if (!statusMatched) {
       return false;
@@ -43,13 +60,13 @@ const applyFilters = (products, filters) => products.filter((product) => {
   }
 
   // Present only if filter required
-  if (typeof filters.inStock !== 'undefined') {
-    const stockMatched = product.inStock === filters.inStock;
-
-    if (!stockMatched) {
-      return false;
-    }
-  }
+  // if (typeof filters.inStock !== 'undefined') {
+  //   const stockMatched = product.inStock === filters.inStock;
+  //
+  //   if (!stockMatched) {
+  //     return false;
+  //   }
+  // }
 
   return true;
 });
@@ -69,27 +86,58 @@ const CategorytList = () => {
     inStock: undefined
   });
 
+  const { loadCategory } = useAction();
+  const { items } = useSelector(({ category }) => category);
+  // console.log('category-useSelector', items);
+
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
 
-  const getProducts = useCallback(async () => {
-    try {
-      const data = await productApi.getProducts();
+  // useEffect(() => {
+  //     loadCategory();
+  //   },
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   []);
 
-      if (isMounted()) {
-        setProducts(data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, [isMounted]);
+  // const getProducts = useCallback(async () => {
+  //   try {
+  //     const data = await productApi.getProducts();
+  //     await loadCategory();
+  //     if (isMounted()) {
+  //       setProducts(items);
+  //       // setProducts(data);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [isMounted]);
 
   useEffect(() => {
-      getProducts();
+      loadCategory();
+      // getProducts();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []);
+
+  useEffect(() => {
+      setProducts(items);
+      // getProducts();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items]);
+
+  // useCallback(async () => {
+  //   try {
+  //     setProducts(items);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [items]);
+
+  if (!products) {
+    return false;
+  }
 
   const handleFiltersChange = (filters) => {
     setFilters(filters);
@@ -111,7 +159,7 @@ const CategorytList = () => {
     <>
       <Head>
         <title>
-          Dashboard: Product List | Material Kit Pro
+          Категории
         </title>
       </Head>
       <Box
@@ -140,7 +188,7 @@ const CategorytList = () => {
                 >
                   <Button
                     component="a"
-                    startIcon={<PlusIcon fontSize="small" />}
+                    startIcon={<PlusIcon fontSize="small"/>}
                     variant="contained"
                   >
                     Добавить
@@ -150,7 +198,7 @@ const CategorytList = () => {
             </Grid>
           </Box>
           <Card>
-            <CategoryListFilters onChange={handleFiltersChange} />
+            <CategoryListFilters onChange={handleFiltersChange}/>
             <CategoryListTable
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}

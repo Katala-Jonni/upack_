@@ -32,6 +32,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (!this.roles) {
       return user;
     }
+    console.log('this.roles', this.roles)
     const isRoles: boolean = this.roles.some((role: string) =>
       user.roles?.includes(role),
     );

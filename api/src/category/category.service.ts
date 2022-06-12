@@ -43,7 +43,7 @@ export class CategoryService {
       errors: {},
     };
     if (categoryByTitle) {
-      errorResponse['title'] = 'has already been taken';
+      errorResponse['title'] = 'Такая категория уже есть!';
     }
 
     if (categoryByTitle) {
@@ -70,7 +70,7 @@ export class CategoryService {
     };
     const isCategoryBySlug = updateCategoryDto.title.toLowerCase() !== categoryBySlug.title.toLowerCase();
     if (categoryByTitle && isCategoryBySlug) {
-      errorResponse['title'] = 'has already been taken';
+      errorResponse['title'] = 'Такая категория уже есть!';
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
