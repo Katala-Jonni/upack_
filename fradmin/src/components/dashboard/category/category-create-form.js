@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import * as Yup from 'yup';
+import { setLocale } from 'yup';
 import { useFormik } from 'formik';
 import {
   Box,
@@ -20,6 +21,8 @@ import { FileDropzone } from '../../file-dropzone';
 import { QuillEditor } from '../../quill-editor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NextLink from 'next/link';
+import { routes as route } from '../../../api/routes';
+import { useAction } from '../../../hooks/use-actions';
 
 const categoryOptions = [
   {
@@ -48,24 +51,43 @@ const categoryOptions = [
   }
 ];
 
+setLocale({
+  string: {
+    min: 'Минимальное количество символов ${min}',
+    max: 'Максимальное количество символов ${max}'
+  },
+});
+
 export const CategoryCreateForm = (props) => {
   const router = useRouter();
   const [files, setFiles] = useState([]);
+  const [name, setName] = useState('');
+  const { dashboard, products, category } = route;
+  const url = `${dashboard}${products}${category}`;
+  const { startCreateCategory } = useAction();
+  const minLengthName = 3;
+  const handleChangeName = e => {
+    setName(e.target.value.trim());
+    formik.handleChange(e);
+  };
   const formik = useFormik({
     initialValues: {
       name: ''
     },
     validationSchema: Yup.object({
-      name: Yup.string().max(255).required('Укажите наименование категории')
+      name: Yup.string().min(4).max(255).required('Укажите наименование категории')
     }),
     onSubmit: async (values, helpers) => {
       try {
         // NOTE: Make API request
-        toast.success('Product created!');
-        router.push('/dashboard/products');
+        if (name && name.length > minLengthName) {
+          await startCreateCategory({ values, toast, router, url });
+        }
+        // toast.success('Категория создана');
+        // await router.push(url);
       } catch (err) {
         console.error(err);
-        toast.error('Something went wrong!');
+        toast.error('Что-то пошло не так! Повторите.');
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
@@ -116,30 +138,30 @@ export const CategoryCreateForm = (props) => {
                 label="Наименование"
                 name="name"
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.name}
+                onChange={handleChangeName}
+                value={formik.values.name.trim()}
               />
             </Grid>
           </Grid>
-          <Grid
-            container
-            spacing={3}
-            sx={{
-              mt: 0.5,
-              justifyContent: 'flex-end'
-            }}
-          >
-            <Grid
-              item
-              md={8}
-              xs={12}
-            >
-              <FormControlLabel
-                control={<Switch defaultChecked/>}
-                label="Активна?"
-              />
-            </Grid>
-          </Grid>
+          {/*<Grid*/}
+          {/*  container*/}
+          {/*  spacing={3}*/}
+          {/*  sx={{*/}
+          {/*    mt: 0.5,*/}
+          {/*    justifyContent: 'flex-end'*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Grid*/}
+          {/*    item*/}
+          {/*    md={8}*/}
+          {/*    xs={12}*/}
+          {/*  >*/}
+          {/*    <FormControlLabel*/}
+          {/*      control={<Switch defaultChecked/>}*/}
+          {/*      label="Активна?"*/}
+          {/*    />*/}
+          {/*  </Grid>*/}
+          {/*</Grid>*/}
         </CardContent>
       </Card>
       <Box
@@ -153,7 +175,7 @@ export const CategoryCreateForm = (props) => {
         }}
       >
         <NextLink
-          href="/dashboard/products/category"
+          href={url}
           passHref
         >
           <Button
@@ -163,13 +185,16 @@ export const CategoryCreateForm = (props) => {
             Отмена
           </Button>
         </NextLink>
-        <Button
-          sx={{ m: 1 }}
-          type="submit"
-          variant="contained"
-        >
-          Создать
-        </Button>
+        {name && name.length > minLengthName
+          ? <Button
+            sx={{ m: 1 }}
+            type="submit"
+            variant="contained"
+          >
+            Создать
+          </Button>
+          : null
+        }
       </Box>
     </form>
   );

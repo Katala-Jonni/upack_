@@ -1,1 +1,1 @@
-export const storageKey = 'foodFabric';
+export const storageKey = 'accessToken';

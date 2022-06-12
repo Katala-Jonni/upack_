@@ -2,13 +2,16 @@ function loadStorage(sessionStorageKey) {
     const stringData = window.localStorage.getItem(sessionStorageKey);
     let data = null;
 
-    try {
-        data = JSON.parse(stringData);
-    } catch (e) {
-        data = null;
-    }
-
-    return data;
+    // console.log('stringData', stringData);
+    //
+    // try {
+    //     data = JSON.parse(stringData);
+    // } catch (e) {
+    //     data = null;
+    // }
+    // console.log('data', data);
+    // return data;
+    return stringData;
 }
 
 function saveStorage(sessionStorageKey, data) {
