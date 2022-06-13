@@ -1,17 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
 import { Box, Container, Link, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { AuthGuard } from '../../../../components/authentication/auth-guard';
 import { DashboardLayout } from '../../../../components/dashboard/dashboard-layout';
-import { ProductCreateForm } from '../../../../components/dashboard/product/product-create-form';
 import { gtm } from '../../../../lib/gtm';
 import { ProductEditForm } from '../../../../components/dashboard/product/product-edit-form';
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+import { useAction } from '../../../../hooks/use-actions';
 
 const ProductCreate = () => {
+  const router = useRouter();
+  const { currentProduct } = useSelector(({ product }) => product);
+  const { startCurrentProduct, loadProduct } = useAction();
+
   useEffect(() => {
     gtm.push({ event: 'page_view' });
+  }, []);
+
+  useEffect(() => {
+    startCurrentProduct({ slug: router.query.productId });
+    loadProduct();
   }, []);
 
   return (
@@ -52,12 +63,22 @@ const ProductCreate = () => {
               </Link>
             </NextLink>
           </Box>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h4">
-              Изменить (Указать название товара)
+          {currentProduct
+            ? <Fragment>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h4">
+                  Изменить (Указать название товара)
+                </Typography>
+              </Box>
+              <ProductEditForm
+                product={currentProduct}
+              />
+            </Fragment>
+            : <Typography variant="h6">
+              Товар не найден!
             </Typography>
-          </Box>
-          <ProductEditForm/>
+          }
+
         </Container>
       </Box>
     </>

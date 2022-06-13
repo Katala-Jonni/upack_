@@ -4,11 +4,13 @@ import {
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../modules';
 import category from '../modules/Category';
+import product from '../modules/Product';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const mainReducer = combineReducers({
-  category
+  category,
+  product
 });
 
 const composeEnhancers = typeof window === 'object'

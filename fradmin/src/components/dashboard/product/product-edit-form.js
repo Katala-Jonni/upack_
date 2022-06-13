@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import * as Yup from 'yup';
@@ -19,73 +19,91 @@ import {
 import { FileDropzone } from '../../file-dropzone';
 import { QuillEditor } from '../../quill-editor';
 import NextLink from 'next/link';
+import { useAction } from '../../../hooks/use-actions';
+import { useSelector } from 'react-redux';
+import { status } from '../../../utils/category';
 
-const categoryOptions = [
-  {
-    label: 'Healthcare',
-    value: 'healthcare'
-  },
-  {
-    label: 'Makeup',
-    value: 'makeup'
-  },
-  {
-    label: 'Dress',
-    value: 'dress'
-  },
-  {
-    label: 'Skincare',
-    value: 'skincare'
-  },
-  {
-    label: 'Jewelry',
-    value: 'jewelry'
-  },
-  {
-    label: 'Blouse',
-    value: 'blouse'
-  }
-];
+// const categoryOptions = [
+//   {
+//     label: 'Healthcare',
+//     value: 'healthcare'
+//   },
+//   {
+//     label: 'Makeup',
+//     value: 'makeup'
+//   },
+//   {
+//     label: 'Dress',
+//     value: 'dress'
+//   },
+//   {
+//     label: 'Skincare',
+//     value: 'skincare'
+//   },
+//   {
+//     label: 'Jewelry',
+//     value: 'jewelry'
+//   },
+//   {
+//     label: 'Blouse',
+//     value: 'blouse'
+//   }
+// ];
 
 export const ProductEditForm = (props) => {
-  const router = useRouter();
+  const { product } = props;
   const [files, setFiles] = useState([]);
+  const { options } = useSelector(({ category }) => category);
+  const { startEditProduct } = useAction();
+
   const formik = useFormik({
     initialValues: {
-      barcode: '925487986526',
-      category: '',
-      description: '',
-      images: [],
-      name: '',
-      newPrice: 0,
-      oldPrice: 0,
-      sku: 'IYV-8745',
-      submit: null
+      categoryId: product?.categoryId,
+      description: product?.description,
+      images: product?.images,
+      title: product?.title,
+      price: product?.price,
+      composition: product?.composition,
+      weight: product?.weight,
+      active: product?.active === status.active
     },
     validationSchema: Yup.object({
-      barcode: Yup.string().max(255),
-      category: Yup.string().max(255),
-      description: Yup.string().max(5000),
+      categoryId: Yup.string().max(255).required('Выберите категорию'),
+      description: Yup.string().min(4).max(300).required('Опишите товар'),
+      composition: Yup.string().min(4).max(100).required('Укажите состав'),
+      weight: Yup.number().min(1).required('Укажите вес в гр.'),
       images: Yup.array(),
-      name: Yup.string().max(255).required(),
-      newPrice: Yup.number().min(0).required(),
-      oldPrice: Yup.number().min(0),
-      sku: Yup.string().max(255)
+      title: Yup.string().min(4).max(50).required('Укажите наименование товара'),
+      price: Yup.number().min(1).required('Укажите цену'),
+      active: Yup.bool()
     }),
     onSubmit: async (values, helpers) => {
       try {
         // NOTE: Make API request
-        toast.success('Product created!');
-        router.push('/dashboard/products');
+        await startEditProduct({ product, values, toast });
       } catch (err) {
         console.error(err);
-        toast.error('Something went wrong!');
+        toast.error('Что-то пошло не так! Повторите.');
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
     }
   });
+
+  // useEffect(() => {
+  //   loadCategory();
+  //   startCurrentProduct({ slug: router.query.productId });
+  // }, []);
+  //
+  // useEffect(() => {
+  //   setCategoryOptions(options);
+  //   seProduct(currentProduct);
+  // }, [options, currentProduct]);
+
+  // console.log('product', product);
+  //
+  // console.log('formik.values', formik.values);
 
   const handleDrop = (newFiles) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
@@ -98,6 +116,14 @@ export const ProductEditForm = (props) => {
   const handleRemoveAll = () => {
     setFiles([]);
   };
+
+  if (!options) {
+    return (
+      <Typography variant="h6">
+        Товар не найден!
+      </Typography>
+    );
+  }
 
   return (
     <form
@@ -125,108 +151,95 @@ export const ProductEditForm = (props) => {
             >
               <TextField
                 sx={{ mb: 2 }}
-                error={Boolean(formik.touched.category && formik.errors.category)}
+                error={Boolean(formik.touched.categoryId && formik.errors.categoryId)}
                 fullWidth
                 label="Выберите категорию"
-                name="category"
+                name="categoryId"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 select
-                value={formik.values.category}
+                value={formik.values.categoryId}
               >
-                {categoryOptions.map((option) => (
+                {options.map((option) => (
                   <MenuItem
                     key={option.value}
                     value={option.value}
                   >
-                    {option.label}
+                    {`${option.label[0].toUpperCase()}${option.label.slice(1)}`}
                   </MenuItem>
                 ))}
               </TextField>
               <TextField
                 sx={{ mb: 2 }}
-                error={Boolean(formik.touched.name && formik.errors.name)}
+                error={Boolean(formik.touched.title && formik.errors.title)}
                 fullWidth
-                helperText={formik.touched.name && formik.errors.name}
+                helperText={formik.touched.title && formik.errors.title}
                 label="Наименование"
                 name="title"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.name}
+                value={formik.values.title}
               />
-              <QuillEditor
-                onChange={(value) => {
-                  formik.setFieldValue('description', value);
-                }}
-                placeholder="Опишите товар"
-                sx={{
-                  height: 200,
-                  mb: 2
-                }}
-                value={formik.values.description}
-                modules={{
-                  toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['clean']
-                  ]
-                }}
-              />
-              {(formik.touched.description && formik.errors.description) && (
-                <Box sx={{ mt: 2, mb: 2 }}>
-                  <FormHelperText error>
-                    {formik.errors.description}
-                  </FormHelperText>
-                </Box>
-              )}
-              <QuillEditor
-                onChange={(value) => {
-                  formik.setFieldValue('description', value);
-                }}
-                placeholder="Укажите состав через запятую"
-                sx={{
-                  height: 200,
-                  mb: 2
-                }}
-                value={formik.values.description}
-                modules={{
-                  toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    ['clean']
-                  ]
-                }}
-              />
-              {(formik.touched.description && formik.errors.description) && (
-                <Box sx={{ mt: 2, mb: 2 }}>
-                  <FormHelperText error>
-                    {formik.errors.description}
-                  </FormHelperText>
-                </Box>
-              )}
               <TextField
                 sx={{ mb: 2 }}
-                error={Boolean(formik.touched.newPrice && formik.errors.newPrice)}
+                error={Boolean(formik.touched.description && formik.errors.description)}
                 fullWidth
+                helperText={formik.touched.description && formik.errors.description}
+                label="Опишите товар"
+                multiline
+                rows={4}
+                name="description"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.description}
+              />
+              <TextField
+                sx={{ mb: 2 }}
+                error={Boolean(formik.touched.composition && formik.errors.composition)}
+                fullWidth
+                helperText={formik.touched.composition && formik.errors.composition}
+                label="Укажите состав через запятую"
+                multiline
+                rows={4}
+                name="composition"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.composition}
+              />
+              <TextField
+                sx={{ mb: 2 }}
+                error={Boolean(formik.touched.price && formik.errors.price)}
+                fullWidth
+                helperText={formik.touched.price && formik.errors.price}
                 label="Укажите цену (₽)"
                 name="price"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 type="number"
-                value={formik.values.newPrice}
+                min={0}
+                value={formik.values.price}
               />
               <TextField
                 sx={{ mb: 2 }}
-                error={Boolean(formik.touched.oldPrice && formik.errors.oldPrice)}
+                error={Boolean(formik.touched.weight && formik.errors.weight)}
                 fullWidth
+                helperText={formik.touched.weight && formik.errors.weight}
                 label="Укажите вес (гр.)"
                 name="weight"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 type="number"
-                value={formik.values.oldPrice}
+                min={0}
+                value={formik.values.weight}
               />
               <FormControlLabel
-                control={<Switch defaultChecked/>}
+                control={<Switch
+                  // checked={active}
+                  checked={formik.values.active}
+                  name='active'
+                  onChange={formik.handleChange}
+                  // onChange={handleChangeActive}
+                />}
                 label="Активный?"
               />
             </Grid>
@@ -281,19 +294,19 @@ export const ProductEditForm = (props) => {
           mt: 3
         }}
       >
-        <Button
-          sx={{ m: 1, mr: 'auto' }}
-          variant="contained"
-          color="error"
-        >
-          Удалить
-        </Button>
+        {/*<Button*/}
+        {/*  sx={{ m: 1, mr: 'auto' }}*/}
+        {/*  variant="contained"*/}
+        {/*  color="error"*/}
+        {/*>*/}
+        {/*  Удалить*/}
+        {/*</Button>*/}
         <NextLink
           href="/dashboard/products"
           passHref
         >
           <Button
-            sx={{ m: 1}}
+            sx={{ m: 1, ml: 'auto' }}
             variant="outlined"
           >
             Отмена
