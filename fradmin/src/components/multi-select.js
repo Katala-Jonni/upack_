@@ -32,7 +32,7 @@ export const MultiSelect = (props) => {
     <>
       <Button
         color="inherit"
-        endIcon={<ChevronDownIcon fontSize="small" />}
+        endIcon={<ChevronDownIcon fontSize="small"/>}
         onClick={handleOpenMenu}
         ref={anchorRef}
         {...other}>
@@ -54,7 +54,7 @@ export const MultiSelect = (props) => {
                   value={option.value}
                 />
               )}
-              label={option.label}
+              label={`${option.label[0].toUpperCase()}${option.label.slice(1)}`}
               sx={{
                 flexGrow: 1,
                 mr: 0

@@ -35,7 +35,7 @@ const applyFilters = (products, filters) => products.filter((product) => {
 
   // It is possible to select multiple category options
   if (filters.category?.length > 0) {
-    const categoryMatched = filters.category.includes(product.category);
+    const categoryMatched = filters.category.includes(product.categoryId);
 
     if (!categoryMatched) {
       return false;
@@ -186,7 +186,7 @@ const ProductList = () => {
             </Grid>
           </Box>
           <Card>
-            {/*<ProjectListFilters onChange={handleFiltersChange}/>*/}
+            <ProjectListFilters onChange={handleFiltersChange}/>
             <ProductListTable
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}

@@ -10,11 +10,12 @@ import { ProductEditForm } from '../../../../components/dashboard/product/produc
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { useAction } from '../../../../hooks/use-actions';
+import { endProduct } from '../../../../modules/Product';
 
 const ProductCreate = () => {
   const router = useRouter();
   const { currentProduct } = useSelector(({ product }) => product);
-  const { startCurrentProduct, loadProduct } = useAction();
+  const { startCurrentProduct, loadProduct, endProduct } = useAction();
 
   useEffect(() => {
     gtm.push({ event: 'page_view' });
@@ -23,6 +24,9 @@ const ProductCreate = () => {
   useEffect(() => {
     startCurrentProduct({ slug: router.query.productId });
     loadProduct();
+    return function cleanUp() {
+      return endProduct();
+    };
   }, []);
 
   return (
@@ -74,9 +78,7 @@ const ProductCreate = () => {
                 product={currentProduct}
               />
             </Fragment>
-            : <Typography variant="h6">
-              Товар не найден!
-            </Typography>
+            : null
           }
 
         </Container>
