@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { Box, Button, Card, Container, Grid, Typography } from '@mui/material';
@@ -12,10 +12,21 @@ import { Download as DownloadIcon } from '../../../icons/download';
 import { Upload as UploadIcon } from '../../../icons/upload';
 import { Plus as PlusIcon } from '../../../icons/plus';
 import { gtm } from '../../../lib/gtm';
+import { useAction } from '../../../hooks/use-actions';
+import { useSelector } from 'react-redux';
+import { routes } from '../../../api/routes';
 
 const applyFilters = (products, filters) => products.filter((product) => {
+  // if (filters.name) {
+  //   const nameMatched = product.name.toLowerCase().includes(filters.name.toLowerCase());
+  //
+  //   if (!nameMatched) {
+  //     return false;
+  //   }
+  // }
+
   if (filters.name) {
-    const nameMatched = product.name.toLowerCase().includes(filters.name.toLowerCase());
+    const nameMatched = product.title.toLowerCase().includes(filters.name.toLowerCase());
 
     if (!nameMatched) {
       return false;
@@ -24,7 +35,7 @@ const applyFilters = (products, filters) => products.filter((product) => {
 
   // It is possible to select multiple category options
   if (filters.category?.length > 0) {
-    const categoryMatched = filters.category.includes(product.category);
+    const categoryMatched = filters.category.includes(product.categoryId);
 
     if (!categoryMatched) {
       return false;
@@ -32,8 +43,16 @@ const applyFilters = (products, filters) => products.filter((product) => {
   }
 
   // It is possible to select multiple status options
+  // if (filters.status?.length > 0) {
+  //   const statusMatched = filters.status.includes(product.status);
+  //
+  //   if (!statusMatched) {
+  //     return false;
+  //   }
+  // }
+
   if (filters.status?.length > 0) {
-    const statusMatched = filters.status.includes(product.status);
+    const statusMatched = filters.status.includes(product.active);
 
     if (!statusMatched) {
       return false;
@@ -41,13 +60,13 @@ const applyFilters = (products, filters) => products.filter((product) => {
   }
 
   // Present only if filter required
-  if (typeof filters.inStock !== 'undefined') {
-    const stockMatched = product.inStock === filters.inStock;
-
-    if (!stockMatched) {
-      return false;
-    }
-  }
+  // if (typeof filters.inStock !== 'undefined') {
+  //   const stockMatched = product.inStock === filters.inStock;
+  //
+  //   if (!stockMatched) {
+  //     return false;
+  //   }
+  // }
 
   return true;
 });
@@ -58,6 +77,7 @@ const applyPagination = (products, page, rowsPerPage) => products.slice(page * r
 const ProductList = () => {
   const isMounted = useMounted();
   const [products, setProducts] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filters, setFilters] = useState({
@@ -66,28 +86,46 @@ const ProductList = () => {
     status: [],
     inStock: undefined
   });
+  const addBtnUrl = `${routes.dashboard}${routes.products}${routes.new}`;
+
+  const { loadProduct } = useAction();
+  const { items } = useSelector(({ product }) => product);
+  const { items: categories, options } = useSelector(({ category }) => category);
+  // console.log('categories', categories);
 
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
 
-  const getProducts = useCallback(async () => {
-    try {
-      const data = await productApi.getProducts();
-
-      if (isMounted()) {
-        setProducts(data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, [isMounted]);
+  // const getProducts = useCallback(async () => {
+  //   try {
+  //     const data = await productApi.getProducts();
+  //
+  //     if (isMounted()) {
+  //       setProducts(data);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [isMounted]);
 
   useEffect(() => {
-      getProducts();
+      loadProduct();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []);
+
+  useEffect(() => {
+      setProducts(items);
+      setCategoryOptions(options || []);
+      // getProducts();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items, options]);
+
+  if (!products) {
+    return false;
+  }
 
   const handleFiltersChange = (filters) => {
     setFilters(filters);
@@ -133,12 +171,12 @@ const ProductList = () => {
               </Grid>
               <Grid item>
                 <NextLink
-                  href="/dashboard/products/new"
+                  href={addBtnUrl}
                   passHref
                 >
                   <Button
                     component="a"
-                    startIcon={<PlusIcon fontSize="small" />}
+                    startIcon={<PlusIcon fontSize="small"/>}
                     variant="contained"
                   >
                     Добавить
@@ -148,7 +186,7 @@ const ProductList = () => {
             </Grid>
           </Box>
           <Card>
-            <ProjectListFilters onChange={handleFiltersChange} />
+            <ProjectListFilters onChange={handleFiltersChange}/>
             <ProductListTable
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
@@ -156,6 +194,7 @@ const ProductList = () => {
               products={paginatedProducts}
               productsCount={filteredProducts.length}
               rowsPerPage={rowsPerPage}
+              options={categoryOptions}
             />
           </Card>
         </Container>

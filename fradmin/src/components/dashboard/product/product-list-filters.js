@@ -4,33 +4,34 @@ import { Box, Chip, Divider, Input, Typography } from '@mui/material';
 import { Search as SearchIcon } from '../../../icons/search';
 import { MultiSelect } from '../../multi-select';
 import { RadioSelect } from '../../radio-select';
+import { useSelector } from 'react-redux';
 
-const categoryOptions = [
-  {
-    label: 'Healthcare',
-    value: 'healthcare'
-  },
-  {
-    label: 'Makeup',
-    value: 'makeup'
-  },
-  {
-    label: 'Dress',
-    value: 'dress'
-  },
-  {
-    label: 'Skincare',
-    value: 'skincare'
-  },
-  {
-    label: 'Jewelry',
-    value: 'jewelry'
-  },
-  {
-    label: 'Blouse',
-    value: 'blouse'
-  }
-];
+// const categoryOptions = [
+//   {
+//     label: 'Healthcare',
+//     value: 'healthcare'
+//   },
+//   {
+//     label: 'Makeup',
+//     value: 'makeup'
+//   },
+//   {
+//     label: 'Dress',
+//     value: 'dress'
+//   },
+//   {
+//     label: 'Skincare',
+//     value: 'skincare'
+//   },
+//   {
+//     label: 'Jewelry',
+//     value: 'jewelry'
+//   },
+//   {
+//     label: 'Blouse',
+//     value: 'blouse'
+//   }
+// ];
 
 const statusOptions = [
   {
@@ -80,7 +81,14 @@ const useUpdateEffect = (effect, dependencies = []) => {
 export const ProjectListFilters = (props) => {
   const { onChange, ...other } = props;
   const [queryValue, setQueryValue] = useState('');
+  // const [categories, setCategories] = useState(null);
+  const [categoryOptions, setCategoryOptions] = useState(null);
   const [filterItems, setFilterItems] = useState([]);
+  const { items, options } = useSelector(({ category }) => category);
+  useEffect(() => {
+    // setCategories(items);
+    setCategoryOptions(options);
+  }, [options]);
 
   useUpdateEffect(() => {
       const filters = {
@@ -93,7 +101,7 @@ export const ProjectListFilters = (props) => {
       // Transform the filter items in an object that can be used by the parent component to call the
       // serve with the updated filters
       filterItems.forEach((filterItem) => {
-        switch (filterItem.field) {
+        switch(filterItem.field) {
           case 'name':
             // There will (or should) be only one filter item with field "name"
             // so we can setup it directly
@@ -118,6 +126,8 @@ export const ProjectListFilters = (props) => {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filterItems]);
+
+  if (!categoryOptions) return false;
 
   const handleDelete = (filterItem) => {
     setFilterItems((prevState) => prevState.filter((_filterItem) => {
@@ -170,7 +180,6 @@ export const ProjectListFilters = (props) => {
         if (filterItem.field !== 'category') {
           return true;
         }
-
         const found = values.includes(filterItem.value);
 
         if (found) {
@@ -188,7 +197,6 @@ export const ProjectListFilters = (props) => {
       values.forEach((value) => {
         if (!valuesFound.includes(value)) {
           const option = categoryOptions.find((option) => option.value === value);
-
           newFilterItems.push({
             label: 'Категория',
             field: 'category',
@@ -253,7 +261,7 @@ export const ProjectListFilters = (props) => {
       const newFilterItems = prevState.filter((filterItem) => filterItem.field !== 'inStock');
       const latestValue = values[values.length - 1];
 
-      switch (latestValue) {
+      switch(latestValue) {
         case 'available':
           newFilterItems.push({
             label: 'Stock',
@@ -280,26 +288,30 @@ export const ProjectListFilters = (props) => {
   };
 
   // We memoize this part to prevent re-render issues
-  const categoryValues = useMemo(() => filterItems
+  const categoryValues = filterItems
     .filter((filterItems) => filterItems.field === 'category')
-    .map((filterItems) => filterItems.value), [filterItems]);
+    .map((filterItems) => filterItems.value);
 
-  const statusValues = useMemo(() => filterItems
+  // const statusValues = useMemo(() => filterItems
+  //   .filter((filterItems) => filterItems.field === 'status')
+  //   .map((filterItems) => filterItems.value), [filterItems]);
+
+  const statusValues = filterItems
     .filter((filterItems) => filterItems.field === 'status')
-    .map((filterItems) => filterItems.value), [filterItems]);
+    .map((filterItems) => filterItems.value);
 
-  const stockValues = useMemo(() => {
-    const values = filterItems
-      .filter((filterItems) => filterItems.field === 'inStock')
-      .map((filterItems) => filterItems.value);
+  // const stockValues = useMemo(() => {
+  //   const values = filterItems
+  //     .filter((filterItems) => filterItems.field === 'inStock')
+  //     .map((filterItems) => filterItems.value);
 
-    // Since we do not display the "all" as chip, we add it to the multi-select as a selected value
-    if (values.length === 0) {
-      values.unshift('all');
-    }
-
-    return values;
-  }, [filterItems]);
+  // Since we do not display the "all" as chip, we add it to the multi-select as a selected value
+  // if (values.length === 0) {
+  //   values.unshift('all');
+  // }
+  //
+  // return values;
+  // }, [filterItems]);
 
   return (
     <div {...other}>
@@ -310,7 +322,7 @@ export const ProjectListFilters = (props) => {
           p: 2
         }}
       >
-        <SearchIcon fontSize="small" />
+        <SearchIcon fontSize="small"/>
         <Box
           sx={{
             flexGrow: 1,
@@ -327,7 +339,7 @@ export const ProjectListFilters = (props) => {
           />
         </Box>
       </Box>
-      <Divider />
+      <Divider/>
       {filterItems.length > 0
         ? (
           <Box
@@ -376,7 +388,7 @@ export const ProjectListFilters = (props) => {
             </Typography>
           </Box>
         )}
-      <Divider />
+      <Divider/>
       <Box
         sx={{
           alignItems: 'center',

@@ -6,7 +6,8 @@ import { status } from '../../utils/category';
 
 const initialState = {
   items: null,
-  count: 0
+  count: 0,
+  options: null
 };
 
 const getStatus = arr => {
@@ -20,6 +21,15 @@ const getStatus = arr => {
   });
 };
 
+const getCategoriesOption = arr => {
+  return arr.map(c => {
+    return {
+      label: c.title,
+      value: c._id
+    };
+  });
+};
+
 const categoryReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch(type) {
@@ -27,13 +37,15 @@ const categoryReducer = (state = initialState, action) => {
       return {
         ...state,
         items: getStatus([...payload.categories]),
-        count: payload.categoriesCount
+        count: payload.categoriesCount,
+        options: getCategoriesOption([...payload.categories])
       };
     case endCreateCategory.toString():
       return {
         ...state,
         items: getStatus([...payload.categories]),
-        count: payload.categoriesCount
+        count: payload.categoriesCount,
+        options: getCategoriesOption([...payload.categories])
       };
     case endEditCategory.toString():
       const currentCategory = state.items.findIndex(c => c._id === payload.category._id);
@@ -41,7 +53,8 @@ const categoryReducer = (state = initialState, action) => {
       items[currentCategory] = payload.category;
       return {
         ...state,
-        items
+        items,
+        options: getCategoriesOption(items)
       };
     case endCategory.toString():
       return {
