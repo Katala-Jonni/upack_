@@ -17,12 +17,19 @@ export class CategoryService {
   constructor(@InjectModel(Category.name) private readonly categoryRepository: Model<CategoryDocument>) {
   }
 
-  async findOne(query: SearchInterface): Promise<Category> {
+  async findOne(query: { refKey: string }): Promise<Category> {
     return await this.categoryRepository.findOne(query)
       .select({
         __v: 0,
       })
       .exec();
+  }
+  async findRootCategory(): Promise<Category[]> {
+    return await this.categoryRepository.find({parent: '00000000-0000-0000-0000-000000000000'})
+        .select({
+          __v: 0,
+        })
+        .exec();
   }
 
   async findAllCategory(): Promise<Category[]> {
@@ -33,70 +40,78 @@ export class CategoryService {
       .exec();
   }
 
-  async findOneCategory(slug: string): Promise<Category> {
-    return this.findOne({ slug });
+  async findAllParentCategory(refKey: string): Promise<Category[]> {
+    return await this.categoryRepository.find({parent: refKey})
+        .select({
+          __v: 0,
+        })
+        .exec();
   }
 
-  async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category[]> {
-    const categoryByTitle = await this.findOne({ title: createCategoryDto.title });
-    const errorResponse = {
-      errors: {},
-    };
-    if (categoryByTitle) {
-      errorResponse['title'] = 'Такая категория уже есть!';
-    }
-
-    if (categoryByTitle) {
-      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-    const slug = this.getSlug(createCategoryDto.title);
-    const newCategory = new this.categoryRepository({
-      ...createCategoryDto,
-      slug,
-    });
-    await newCategory.save();
-    return this.findAllCategory();
+  async findOneCategory(refKey: string): Promise<Category> {
+    return this.findOne({ refKey });
   }
 
-  async updateCategory(updateCategoryDto: UpdateCategoryDto, slug: string): Promise<Category> {
-    const categoryBySlug = await this.findOne({ slug });
-    const categoryByTitle = await this.findOne({ title: updateCategoryDto.title });
-    if (!categoryBySlug) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
-    const errorResponse = {
-      errors: {},
-    };
-    const isCategoryBySlug = updateCategoryDto.title.toLowerCase() !== categoryBySlug.title.toLowerCase();
-    if (categoryByTitle && isCategoryBySlug) {
-      errorResponse['title'] = 'Такая категория уже есть!';
-      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-    const newSlug = isCategoryBySlug ? this.getSlug(updateCategoryDto.title) : slug;
-    return await this.categoryRepository.findOneAndUpdate(
-      { slug },
-      { ...updateCategoryDto, slug: newSlug },
-      { new: true },
-    ).select({
-      __v: 0,
-    })
-      .exec();
-  }
-
-  async deleteCategory(slug: string) {
-    const categoryBySlug: Category & { _id?: string } = await this.findOne({ slug });
-    if (!categoryBySlug) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
-    if (categoryBySlug.products.length) {
-      const errorMessage = 'У категории есть продукты, чтобы удалить категорию, необходимо удалить продукты или перенести все продукты в другую категорию';
-      throw new HttpException(errorMessage, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    await this.categoryRepository.findByIdAndDelete(categoryBySlug._id);
-    return this.findAllCategory();
-  }
+  // async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category[]> {
+  //   const categoryByTitle = await this.findOne({ title: createCategoryDto.title });
+  //   const errorResponse = {
+  //     errors: {},
+  //   };
+  //   if (categoryByTitle) {
+  //     errorResponse['title'] = 'Такая категория уже есть!';
+  //   }
+  //
+  //   if (categoryByTitle) {
+  //     throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+  //   }
+  //
+  //   const slug = this.getSlug(createCategoryDto.title);
+  //   const newCategory = new this.categoryRepository({
+  //     ...createCategoryDto,
+  //     slug,
+  //   });
+  //   await newCategory.save();
+  //   return this.findAllCategory();
+  // }
+  //
+  // async updateCategory(updateCategoryDto: UpdateCategoryDto, slug: string): Promise<Category> {
+  //   const categoryBySlug = await this.findOne({ slug });
+  //   const categoryByTitle = await this.findOne({ title: updateCategoryDto.title });
+  //   if (!categoryBySlug) {
+  //     throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+  //   }
+  //   const errorResponse = {
+  //     errors: {},
+  //   };
+  //   const isCategoryBySlug = updateCategoryDto.title.toLowerCase() !== categoryBySlug.title.toLowerCase();
+  //   if (categoryByTitle && isCategoryBySlug) {
+  //     errorResponse['title'] = 'Такая категория уже есть!';
+  //     throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+  //   }
+  //
+  //   const newSlug = isCategoryBySlug ? this.getSlug(updateCategoryDto.title) : slug;
+  //   return await this.categoryRepository.findOneAndUpdate(
+  //     { slug },
+  //     { ...updateCategoryDto, slug: newSlug },
+  //     { new: true },
+  //   ).select({
+  //     __v: 0,
+  //   })
+  //     .exec();
+  // }
+  //
+  // async deleteCategory(slug: string) {
+  //   const categoryBySlug: Category & { _id?: string } = await this.findOne({ slug });
+  //   if (!categoryBySlug) {
+  //     throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+  //   }
+  //   if (categoryBySlug.products.length) {
+  //     const errorMessage = 'У категории есть продукты, чтобы удалить категорию, необходимо удалить продукты или перенести все продукты в другую категорию';
+  //     throw new HttpException(errorMessage, HttpStatus.UNPROCESSABLE_ENTITY);
+  //   }
+  //   await this.categoryRepository.findByIdAndDelete(categoryBySlug._id);
+  //   return this.findAllCategory();
+  // }
 
   private getSlug(title: string): string {
     const slug = slugify(title, {

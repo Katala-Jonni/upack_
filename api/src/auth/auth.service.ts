@@ -33,11 +33,19 @@ export class AuthService {
   }
 
   login(user: UserType): string {
+    console.log(user, 'userSERVER');
     const payload = { id: user._id };
     return this.jwtService.sign(payload);
   }
 
   findById(id: string): Promise<UserType> {
     return this.UserModel.findById(id).select({ __v: 0 }).lean().exec();
+  }
+
+  createUser(user: UserType): string{
+    const payload = { user };
+    console.log(user, 'new User');
+    return 'CREATE';
+    // return this.jwtService.sign(payload);
   }
 }

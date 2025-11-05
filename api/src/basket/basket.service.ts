@@ -174,6 +174,17 @@ export class BasketService {
       } else {
         basket.total -= basket.products[productIdx].productId.price * +updateBasketDto.count;
       }
+    } else if(inc === 'count') {
+      let sum = 0;
+      if (updateBasketDto.count < 1) {
+        basket.products[productIdx].count = 1;
+      } else {
+        basket.products[productIdx].count = +updateBasketDto.count;
+      }
+      basket.products.forEach((elem): void => {
+        sum += elem.count * elem.productId.price;
+      });
+      basket.total = sum;
     }
     await basket.save();
     return basket;

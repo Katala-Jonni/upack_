@@ -1,0 +1,20 @@
+import { createAction } from 'redux-actions';
+
+export const loadOrder = createAction('@@Order/LOAD_ORDER');
+export const endLoadOrder = createAction('@@Order/END_LOAD_ORDER');
+export const endOrder = createAction('@@Order/END_ORDER');
+export const startCreateOrder = createAction('@@Order/START_CREATE_ORDER');
+export const endCreateOrder = createAction('@@Order/END_CREATE_ORDER');
+export const startEditOrder = createAction('@@Order/START_EDIT_ORDER');
+export const endEditOrder = createAction('@@Order/END_EDIT_ORDER');
+export const startEditProductOrder = createAction('@@Order/START_EDIT_PRODUCT_ORDER');
+export const endEditProductOrder = createAction('@@Order/END_EDIT_PRODUCT_ORDER');
+export const startDeleteProductOrder = createAction('@@Order/START_DELETE_PRODUCT_ORDER');
+export const endDeleteProductOrder = createAction('@@Order/END_DELETE_PRODUCT_ORDER');
+export const startEditOrderStatus = createAction('@@Order/START_EDIT_ORDER_STATUS');
+export const startCurrentOrder = createAction('@@Order/START_CURRENT_ORDER');
+export const endCurrentOrder = createAction('@@Order/END_CURRENT_ORDER');
+export const clearCurrentOrder = createAction('@@Order/CLEAR_ORDER');
+export const startDeleteOrder = createAction('@@Order/START_DELETE_ORDER');
+export const endDeleteOrder = createAction('@@Order/END_DELETE_ORDER');
+export const addFilterOrder = createAction('@@Order/ADD_FILTER_ORDER');

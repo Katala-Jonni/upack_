@@ -48,7 +48,7 @@ export class UserService {
 
     createUserDto.password = await this.createPassword(createUserDto.password);
     const payload = this.createPayload(createUserDto);
-
+    payload.roles = ['admin'];
     const newUser = new this.UserModel(payload);
     await newUser.save();
     return await this.findOne(payload.email);

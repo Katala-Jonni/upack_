@@ -26,6 +26,14 @@ export class Stage {
     default: true,
   })
   active: boolean;
+  @Prop({
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+    set: (v) => v.toLowerCase(),
+  })
+  status: string;
 }
 
 export type StageDocument = Stage & Document;

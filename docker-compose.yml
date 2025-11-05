@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
   fradmin:
     build:
@@ -8,11 +8,27 @@ services:
     command: serve -s build -l 3000
     ports:
     - 3000:3000
+    environment:
+      # Next.js будет обращаться к "backend" по этому имени
+      - NEXT_PUBLIC_API_URL=http://api:3001
     restart: unless-stopped
     networks:
       - food-service-network
     depends_on:
       - api
+#  front:
+#    build:
+#      context:  ./front
+#      dockerfile: Dockerfile.prod
+#    container_name: front
+#    command: serve -s build -l 3000
+#    ports:
+#    - 3000:3000
+#    restart: unless-stopped
+#    networks:
+#      - food-service-network
+#    depends_on:
+#      - api
   api:
     build: ./api
     container_name: food-service-api
@@ -21,14 +37,16 @@ services:
     environment:
 #      - HOST=http://realworld-docker.com
       - PORT=3001
-      - MONGO_URL=mongodb://api_db:27017/api
+      - MONGO_URI=mongodb://mongo:27017/upack
     networks:
       - food-service-network
     depends_on:
-      - api_db
-  api_db:
-    image: mongo:latest
-    container_name: food-service-api-db
+      - mongo
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    ports:
+      - "27018:27018"
     volumes:
       - mongodb_api:/data/db
     networks:
@@ -42,6 +60,7 @@ services:
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - api
+#      - front
       - fradmin
     networks:
       - food-service-network
@@ -50,3 +69,65 @@ volumes:
 networks:
   food-service-network:
     driver: bridge
+
+
+#version: "3.8"
+#services:
+#  fradmin:
+#    build:
+#      context:  ./fradmin
+#      dockerfile: Dockerfile.prod
+#    container_name: food-service-fradmin
+#    command: serve -s build -l 3000
+#    ports:
+#      - 3000:3000
+#    restart: unless-stopped
+#    networks:
+#      - food-service-network
+#    depends_on:
+#      - api
+#  api:
+#    build: ./api
+#    container_name: food-service-api
+#    command: npm run start
+#    restart: unless-stopped
+#    environment:
+#      #      - HOST=http://realworld-docker.com
+#      - PORT=3001
+#      - MONGO_URL=mongodb://api_db:27017/api
+#    networks:
+#      - food-service-network
+#    depends_on:
+#      - api_db
+#  api_db:
+#    image: mongo:latest
+#    container_name: food-service-api-db
+#    ports:
+#      - '27017:27017'
+#    healthcheck:
+#      test: ["CMD", "mongosh", "--eval", "db.version()"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    volumes:
+#      #      - mongodb_api:/data/localdb
+#      - mongodb_api:/data/db
+#    networks:
+#      - food-service-network
+#  nginx:
+#    image: nginx:stable-alpine
+#    container_name: food-service-nginx
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
+#    depends_on:
+#      - api
+#      - fradmin
+#    networks:
+#      - food-service-network
+#volumes:
+#  mongodb_api:
+#networks:
+#  food-service-network:
+#    driver: bridge
