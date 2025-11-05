@@ -22,6 +22,8 @@ import { UserType } from '@app/user/types/user.type';
 import { OrdersResponseInterface } from '@app/order/types/ordersResponse.interface';
 import { OrderResponseInterface } from '@app/order/types/orderResponse.interface';
 import { OrderCreateInterface } from '@app/order/types/orderCreate.interface';
+import { log } from "util";
+import { StageStatusEnum } from "@app/common/enum/stage-status.enum";
 
 const getErrorResponse = () => {
   return {
@@ -58,7 +60,7 @@ const stageMap = {
 };
 
 const populateQuery = [
-  { path: 'basket', select: { __v: 0 } },
+  { path: 'basket', select: { __v: 0 }, populate: {path: 'products.productId'} },
   { path: 'stage', select: { __v: 0 } },
   { path: 'coupon', select: { __v: 0 } },
 ];
@@ -82,6 +84,7 @@ export class OrderService {
       throw new HttpException('basket is not found', HttpStatus.NOT_FOUND);
     }
     const basket = await this.basketRepository.findById(basketId);
+    console.log('basket', basket);
     if (!basket || !basket.isActive) {
       throw new HttpException('basket is not found', HttpStatus.NOT_FOUND);
     }
@@ -173,12 +176,14 @@ export class OrderService {
       const order: OrderDocument = await this.orderRepository.findById(id);
       const stages: StageDocument[] = await this.stageRepository.find();
       const findStageTitle = stages.find(st => `${st._id}` === `${order.stage}`);
+      console.log('findStageTitle', findStageTitle);
       if (findStageTitle.title === StageEnum['новый']) {
-        const stage = stages.find(st => st.title === StageEnum['прочитано']);
+        const stage = stages.find(st => st.title === StageEnum['прочитан']);
         order.stage = stage._id;
         await order.save();
       }
-      return await order.populate(populateQuery);
+      return await order
+          .populate(populateQuery);
     } catch (e) {
       throw new HttpException('order is not found', HttpStatus.NOT_FOUND);
     }
@@ -190,13 +195,14 @@ export class OrderService {
       errorResponse.message.push('stage is not edit');
       const order: OrderDocument = await this.orderRepository.findById(id);
       const validStage = await this.getValidStage(`${order.stage}`);
+      console.log('validStage', validStage);
       if (!validStage) {
         return await order.populate(populateQuery);
       }
       const stage: StageDocument = await this.stageRepository.findById(stageId);
-      if (stage.title === (StageEnum['новый'] || StageEnum['прочитано'])) {
+      if (stage.status === (StageStatusEnum['new'] || StageStatusEnum['reading'])) {
         return await order.populate(populateQuery);
-      } else if (stage.title === StageEnum['отменено']) {
+      } else if (stage.status === StageStatusEnum['canceled']) {
         if (!updateOrderStageDto || !updateOrderStageDto.causeRejected) {
           errorResponse.message = [
             'Укажите причину отмены заказа',
@@ -206,7 +212,7 @@ export class OrderService {
           order.stage = stage._id;
           order.causeRejected = updateOrderStageDto.causeRejected;
         }
-      } else if (stage.title === StageEnum['закрыто']) {
+      } else if (stage.status === StageStatusEnum[stage.status]) {
         order.stage = stage._id;
       }
       await order.save();
@@ -265,7 +271,7 @@ export class OrderService {
   private async getValidStage(id: string): Promise<boolean> {
     try {
       const currentStage = await this.stageRepository.findById(id);
-      if (currentStage.title === StageEnum['отменено'] || currentStage.title === StageEnum['закрыто']) {
+      if (currentStage.status === StageStatusEnum['canceled'] || currentStage.status === StageStatusEnum['closed']) {
         return false;
       }
       return true;

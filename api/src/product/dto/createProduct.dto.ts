@@ -15,39 +15,68 @@ import {
 export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(4)
-  @MaxLength(50)
   readonly title: string;
   @IsNotEmpty()
+  @IsString()
+  readonly slug: string;
+  @IsNotEmpty()
   @IsInt()
   @IsPositive()
-  @Min(0)
+  @Min(1)
   readonly price: number;
-  @IsNotEmpty()
-  @IsBoolean()
-  readonly active: boolean;
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  readonly categoryId: string;
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(4)
-  @MaxLength(100)
-  readonly composition: string;
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @IsInt()
   @IsPositive()
-  @Min(0)
-  readonly weight: number;
-  @IsOptional()
-  @IsArray()
-  @ArrayNotEmpty()
-  @ArrayUnique()
-  readonly images?: string[];
+  @Min(1)
+  readonly multiplicity: number;
   @IsNotEmpty()
   @IsString()
-  @MinLength(4)
-  @MaxLength(300)
+  readonly parentKey: string;
+  @IsNotEmpty()
+  @IsString()
+  readonly refKey: string;
+  @IsString()
   readonly description: string;
+  @IsString()
+  readonly measurement: string;
 }
+
+// export class CreateProductDto {
+//   @IsNotEmpty()
+//   @IsString()
+//   @MinLength(4)
+//   @MaxLength(50)
+//   readonly title: string;
+//   @IsNotEmpty()
+//   @IsInt()
+//   @IsPositive()
+//   @Min(0)
+//   readonly price: number;
+//   @IsNotEmpty()
+//   @IsBoolean()
+//   readonly active: boolean;
+//   @IsNotEmpty()
+//   @IsString()
+//   @IsMongoId()
+//   readonly categoryId: string;
+//   @IsNotEmpty()
+//   @IsString()
+//   @MinLength(4)
+//   @MaxLength(100)
+//   readonly composition: string;
+//   @IsNotEmpty()
+//   @IsInt()
+//   @IsPositive()
+//   @Min(0)
+//   readonly weight: number;
+//   @IsOptional()
+//   @IsArray()
+//   @ArrayNotEmpty()
+//   @ArrayUnique()
+//   readonly images?: string[];
+//   @IsNotEmpty()
+//   @IsString()
+//   @MinLength(4)
+//   @MaxLength(300)
+//   readonly description: string;
+// }

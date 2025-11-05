@@ -1,0 +1,53 @@
+'use client';
+
+import Grid from '@mui/material/Grid'; // GLOBAL CUSTOM HOOK
+
+import useCart from 'hooks/useCart'; // LOCAL CUSTOM COMPONENTS
+
+import CartItem from '../cart-item';
+import CheckoutForm from '../checkout-form';
+import Button from '@mui/material/Button';
+import Link from 'next/link';
+import Card from '@mui/material/Card';
+
+export default function CartPageView() {
+  const {
+    state
+  } = useCart();
+  return <Grid container spacing={3} sx={{ flexDirection: 'column' }}>
+
+    {
+      /* CHECKOUT FORM */
+    }
+    <Grid item md={12} xs={12}>
+      <CheckoutForm/>
+    </Grid>
+
+    {
+      /* CART PRODUCT LIST */
+    }
+    <Grid container item md={12} xs={12}>
+      {state.cart.map(({
+                         name,
+                         id,
+                         price,
+                         qty,
+                         slug,
+                         imgUrl,
+                         count
+                       }) =>
+        <Grid item xs={12}>
+          <CartItem id={id} key={id} qty={qty} name={name} slug={slug} price={price} imgUrl={imgUrl} count={count}/>
+        </Grid>
+      )}
+    </Grid>
+
+    <Grid item md={12} xs={12}>
+      {state.cart.length
+        ? <Button color="primary" href="/checkout-alternative" variant="contained" LinkComponent={Link}>
+          Оформить заказ
+        </Button>
+        : null}
+    </Grid>
+  </Grid>;
+}

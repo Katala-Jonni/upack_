@@ -11,10 +11,7 @@ export class Product {
   @Prop({
     type: String,
     required: true,
-    unique: true,
     trim: true,
-    get: getFistUppercase,
-    set: (v) => v.toLowerCase(),
   })
   title: string;
   @Prop({
@@ -25,62 +22,131 @@ export class Product {
   price: number;
   @Prop({
     type: Number,
-    default: 0,
-    min: 0,
+    default: 1,
+    min: 1,
   })
-  weight: number;
+  multiplicity: number;
   @Prop({
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+      },
   )
   slug: string;
   @Prop({
-    type: Boolean,
-    default: true,
-  })
-  active: boolean;
+        type: String,
+        default: 'шт',
+        trim: true
+      },
+  )
+  measurement: string;
   @Prop({
     type: String,
-    required: true,
     trim: true,
-    lowercase: true,
-  })
-  composition: string;
-  @Prop({
-    type: String,
-    required: true,
-    trim: true,
-    lowercase: true,
   })
   description: string;
   @Prop({ default: new Date() })
   createdAt: Date;
   @Prop({
-    type: Boolean,
-    default: false,
+    type: String,
+    required: true
   })
-  favorited: boolean;
+  parentKey: string;
   @Prop({
-    type: Number,
-    default: 0,
-    min: 0,
+    type: String,
+    required: true
   })
-  favoritesCount: number;
+  parent: string;
   @Prop({
-    type: [String],
-    default: [],
+    type: String
   })
-  images: string[];
+  refKey: string;
   @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    ref: 'Category',
-    required: true,
+    type: String,
+    default: null
   })
-  categoryId: string
+  file: string | null;
+  @Prop({
+    type: String,
+    default: null
+  })
+  thumbnail?: string | null;
 }
+// export class Product {
+//   @Prop({
+//     type: String,
+//     required: true,
+//     unique: true,
+//     trim: true,
+//     get: getFistUppercase,
+//     set: (v) => v.toLowerCase(),
+//   })
+//   title: string;
+//   @Prop({
+//     type: Number,
+//     default: 0,
+//     min: 0,
+//   })
+//   price: number;
+//   @Prop({
+//     type: Number,
+//     default: 0,
+//     min: 0,
+//   })
+//   weight: number;
+//   @Prop({
+//       type: String,
+//       required: true,
+//       unique: true,
+//       trim: true,
+//     },
+//   )
+//   slug: string;
+//   @Prop({
+//     type: Boolean,
+//     default: true,
+//   })
+//   active: boolean;
+//   @Prop({
+//     type: String,
+//     required: true,
+//     trim: true,
+//     lowercase: true,
+//   })
+//   composition: string;
+//   @Prop({
+//     type: String,
+//     required: true,
+//     trim: true,
+//     lowercase: true,
+//   })
+//   description: string;
+//   @Prop({ default: new Date() })
+//   createdAt: Date;
+//   @Prop({
+//     type: Boolean,
+//     default: false,
+//   })
+//   favorited: boolean;
+//   @Prop({
+//     type: Number,
+//     default: 0,
+//     min: 0,
+//   })
+//   favoritesCount: number;
+//   @Prop({
+//     type: [String],
+//     default: [],
+//   })
+//   images: string[];
+//   @Prop({
+//     type: MongooseSchema.Types.ObjectId,
+//     ref: 'Category',
+//     required: true,
+//   })
+//   categoryId: string
+// }
 
 export type ProductDocument = Product & Document;
 

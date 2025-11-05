@@ -13,6 +13,9 @@ export class CreateStageDto {
   @IsHexColor()
   readonly color: string;
   @IsNotEmpty()
+  @IsString()
+  readonly status: string;
+  @IsNotEmpty()
   @IsBoolean()
   readonly active: boolean;
 }
