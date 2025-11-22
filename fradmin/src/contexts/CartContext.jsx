@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useMemo, useReducer } from "react"; // =================================================================================
+import { createContext, useMemo, useReducer } from "react";
+import { deleteStorage, loadStorage, saveStorage, storageKey } from '../storage'; // =================================================================================
 
 // =================================================================================
 // const INITIAL_CART = [{
@@ -30,7 +31,7 @@ import { createContext, useMemo, useReducer } from "react"; // =================
 // }; // ==============================================================
 const INITIAL_CART = [];
 const INITIAL_STATE = {
-  cart: INITIAL_CART
+  cart: loadStorage(storageKey) && loadStorage(storageKey).length ? JSON.parse(loadStorage(storageKey)) : INITIAL_CART
 }; // ==============================================================
 
 
@@ -38,8 +39,9 @@ const INITIAL_STATE = {
 export const CartContext = createContext({});
 
 const reducer = (state, action) => {
-  console.log('createContextState', state);
-  console.log('createContextAction', action);
+  console.log('CartContextCreateContextState', state);
+  console.log('CartContextCreateContextAction', action);
+  console.log('loadStorage(storageKey)', JSON.parse(loadStorage(storageKey)));
   switch (action.type) {
     case "CHANGE_CART_AMOUNT":
       let cartList = state.cart;
@@ -48,6 +50,7 @@ const reducer = (state, action) => {
 
       if (cartItem.qty < 1) {
         const filteredCart = cartList.filter(item => item.id !== cartItem.id);
+        saveStorage(storageKey, filteredCart);
         return { ...state,
           cart: filteredCart
         };
@@ -58,13 +61,21 @@ const reducer = (state, action) => {
         const newCart = cartList.map(item => item.id === cartItem.id ? { ...item,
           qty: cartItem.qty
         } : item);
+        saveStorage(storageKey, newCart);
         return { ...state,
           cart: newCart
         };
       }
-
+      saveStorage(storageKey, [...cartList, cartItem]);
       return { ...state,
         cart: [...cartList, cartItem]
+      };
+
+    case "REMOVE_CART_AMOUNT":
+      saveStorage(storageKey, []);
+      return {
+        ...state,
+        cart: []
       };
 
     default:

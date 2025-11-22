@@ -19,9 +19,11 @@ import { ProductResponseInterface } from '@app/product/types/productResponse.int
 import { SearchInterface } from '@app/product/types/search.interface';
 import { getRefresh } from "@app/product/product.refresh";
 import { FileService, getRefreshFiles, s3 } from "@app/product/productFile.refresh";
+import { log } from "util";
 
 const getBufferFile = async (fileUrl) => {
     try {
+        if (!fileUrl) return null;
         const indexOf = fileUrl.indexOf('folder');
         if (!indexOf || indexOf === -1) {
             return null;
@@ -35,7 +37,8 @@ const getBufferFile = async (fileUrl) => {
         const base64 = fileBuffer.toString('base64');
         return `${baseUrlForBase64}${base64}`;
     } catch (e) {
-        console.log('Ошибка в запросе getBufferFile', e);
+        console.log('Ошибка в запросе getBufferFile', e)
+        console.log('fileUrl', fileUrl);
     }
 
     // console.log('urlBase64', urlBase64);
@@ -88,8 +91,8 @@ export class ProductService {
 
     async refreshFilesApp() {
         try {
-            const products = await this.findAllProduct();
-            const productsFile = await getRefreshFiles(products);
+            const items = await this.findAllProduct();
+            const productsFile = await getRefreshFiles(items.products);
             return productsFile;
             // const operationsCategory = [
             //     // Операция удаления всех существующих документов
@@ -195,10 +198,55 @@ export class ProductService {
         //     })
         //     .exec();
 
-        return {products, countCollection};
+        return { products, countCollection };
     }
 
-    async findAllCategoryProducts(refKey: string, page: number): Promise<any> {
+    async findSearchProducts(refKey: string, page: number, sort: string): Promise<any> {
+        let sortValue: any = 0;
+        if (sort === 'low') {
+            sortValue = 1;
+        } else if (sort === 'high') {
+            sortValue = -1;
+        }
+        const pathSearchProps = { "title": { $regex: refKey, $options: 'i' } };
+        const countCollection = await this.productRepository.countDocuments(pathSearchProps);
+        const pageNumber = page || 1;
+        const pageSize = 8;
+        const skipAmount = (pageNumber - 1) * pageSize;
+        const products = await this.productRepository.find(pathSearchProps)
+            .sort(sortValue === 0 ? {title: -1} : { price: sortValue, title: -1 })
+            .skip(skipAmount)
+            .limit(pageSize)
+            .select({
+                __v: 0
+            })
+            .exec();
+        const files = products.map(async (el) => {
+            const file = await getBufferFile(el.thumbnail);
+            return {
+                _id: el._id,
+                refKey: el.refKey,
+                title: el.title,
+                description: el.description,
+                parent: el.parent,
+                measurement: el.measurement,
+                slug: el.slug,
+                price: el.price,
+                multiplicity: el.multiplicity,
+                file: el.file,
+                thumbnail: file
+            }
+        });
+        const resBody = await Promise.all(
+            files
+        );
+        // console.log('resBody', resBody);
+        return { products: resBody, countCollection };
+
+        // return products;
+    }
+
+    async findAllCategoryProducts(refKey: string, page: number, sort: string): Promise<any> {
         // const products =  await this.productRepository.find({ parentKey: refKey })
         //     .select({
         //         __v: 0
@@ -227,10 +275,19 @@ export class ProductService {
         const countCollection = await this.productRepository.countDocuments({ parentKey: refKey });
         // console.log('countCollection__________________________', countCollection);
         // console.log('page__________________________', page);
+        let sortValue: any = 0;
+        if (sort === 'low') {
+            sortValue = 1;
+        } else if (sort === 'high') {
+            sortValue = -1;
+        }
         const pageNumber = page || 1;
         const pageSize = 8;
         const skipAmount = (pageNumber - 1) * pageSize;
-        const products = await this.productRepository.find({ parentKey: refKey }).sort({ title: -1 }).skip(skipAmount).limit(pageSize)
+        const products = await this.productRepository.find({ parentKey: refKey })
+            .sort(sortValue === 0 ? {title: -1} : { price: sortValue, title: -1 })
+            .skip(skipAmount)
+            .limit(pageSize)
             .select({
                 __v: 0
             })
@@ -255,6 +312,7 @@ export class ProductService {
             files
         );
         // console.log('resBody', resBody);
+        console.log('findAllCategoryProductsProducts', products);
         return { products: resBody, countCollection };
 
         // return products;
@@ -432,7 +490,7 @@ export class ProductService {
         return `${slug}-${randomString}`;
     }
 
-    buildProductsResponse(products: Product[], countCollection: number ): ProductsResponseInterface {
+    buildProductsResponse(products: Product[], countCollection: number): ProductsResponseInterface {
         return { products, countCollection };
     }
 

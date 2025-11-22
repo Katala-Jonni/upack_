@@ -39,20 +39,20 @@ export default function MiniCartItem({
         </Button>
       </FlexBox>
 
-      <Link href={`/products/${item.id}`}>
+      {/*<Link href={`/products/${item.id}`}>*/}
         <Avatar alt={item.name} src={item.imgUrl} sx={{
         mx: 1,
         width: 75,
         height: 75
       }} />
-      </Link>
+      {/*</Link>*/}
 
-      <Box flex="1" textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
-        <Link href={`/products/${item.slug}`}>
+      <Box flex="1" textOverflow="ellipsis" whiteSpace="wrap" overflow="hidden">
+        {/*<Link href={`/products/${item.slug}`}>*/}
           <H6 ellipsis className="title">
             {item.name}
           </H6>
-        </Link>
+        {/*</Link>*/}
 
         <Tiny color="grey.600">
           {currency(item.price)} x {item.qty}

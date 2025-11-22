@@ -9,11 +9,21 @@ import CheckoutForm from '../checkout-form';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import Card from '@mui/material/Card';
+import { Paragraph } from '../../../components/Typography';
+import React from 'react';
 
 export default function CartPageView() {
   const {
     state
   } = useCart();
+  // if (!state.cart || !state.cart.length) {
+  //   return <Grid item md={12} xs={12}>
+  //     <Paragraph>Ваша корзина пуста</Paragraph>
+  //     <Button color="primary" href="/" variant="contained" LinkComponent={Link}>
+  //       Перейти к каталогу
+  //     </Button>
+  //   </Grid>;
+  // }
   return <Grid container spacing={3} sx={{ flexDirection: 'column' }}>
 
     {

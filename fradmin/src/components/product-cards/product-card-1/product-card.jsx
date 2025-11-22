@@ -118,7 +118,10 @@ export default function ProductCard1({
       {/*<Link href={`/products/${slug}`} >*/}
       {/*<LazyImage priority src={imgUrl} width={500} height={500} alt={title}/>*/}
       {/*<Image src={dimensions.src} width={dimensions.width} height={dimensions.height} alt={title} onLoad={handleImageLoad}/>*/}
+
       <Image fill src={imgUrl} alt={title} style={{ objectFit: 'contain' }} onClick={toggleDialog} loading={'lazy'}/>
+
+
       {/*<img src={imgUrl} width={200} height={200} alt={title}/>*/}
       {/*</Link>*/}
     </ImageWrapper>

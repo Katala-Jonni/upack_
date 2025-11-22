@@ -20,6 +20,7 @@ const Wrapper = styled("div", {
 
 // ===========================================================
 export default function CategoryMenu({
+  categories,
   render
 }) {
   const [open, setOpen] = useState(false);
@@ -37,6 +38,6 @@ export default function CategoryMenu({
   return <Wrapper open={open}>
       {render(onClick)}
 
-      <CategoryList open={open} />
+      <CategoryList open={open}/>
     </Wrapper>;
 }

@@ -8,8 +8,10 @@ export default function SearchResult({
   results
 }) {
   return <SearchResultCard elevation={2}>
-      {results.map(item => <Link href={`/products/search/${item}`} key={item}>
-          <MenuItem key={item}>{item}</MenuItem>
+      {results.map(item =>
+        <Link href={`/products/search/${item}`} key={item}>
+          <MenuItem key={item.id}>{item.title}</MenuItem>
+          {/*<MenuItem key={item}>{item}</MenuItem>*/}
         </Link>)}
     </SearchResultCard>;
 }

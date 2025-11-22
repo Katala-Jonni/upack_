@@ -82,21 +82,56 @@ export const categoryNavigation = [
   }]; // carousel-data
 
 export const mainCarouselData = [
+  // {
+  //   id: 1,
+  //   title: 'ПРОРЫВ НА РЫНКЕ УПАКОВКИ',
+  //   imgUrl: '/assets/images/products/1ea_termo.png',
+  //   description: `Одна упаковка для разных целей.`,
+  //   playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+  //   link: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+  //   // playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+  //   appStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d'
+  // },
   {
     id: 1,
-    title: 'Get Your Grocery Within 40 Minutes',
-    imgUrl: '/assets/images/products/garlic.png',
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu sed pellentesque nibh tortor.`,
-    playStoreLink: '/',
-    appStoreLink: '/'
-  }, {
+    title: 'НОВИНКА ONEPLATTER',
+    imgUrl: '/assets/images/products/1ea_one_platter_.png',
+    description: `Лоток для сервировки и фасовки пищевой продукции`,
+    playStoreLink: '/products/search/a19c4394-c00a-11f0-87f4-fa163eb77d5d',
+    link: '/products/search/a19c4394-c00a-11f0-87f4-fa163eb77d5d',
+    // playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+    appStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d'
+  },
+  {
     id: 2,
-    title: 'Get Your Grocery Within 40 Minutes',
-    imgUrl: '/assets/images/products/garlic.png',
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu sed pellentesque nibh tortor.`,
-    playStoreLink: '/',
-    appStoreLink: '/'
-  }]; // service list
+    title: 'ПРОРЫВ НА РЫНКЕ УПАКОВКИ',
+    imgUrl: '/assets/images/products/1ea_main.png',
+    description: `Упаковка Нового поколения. На уровень выше того, что Вы пробовали.`,
+    playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+    link: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+    // playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+    appStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d'
+  },
+  {
+    id: 3,
+    title: 'Будущее упаковочной индустрии',
+    imgUrl: '/assets/images/products/Do_eco.png',
+    description: `Идеальное решение для упаковки и доставки готовых блюд.`,
+    playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+    link: '/products/search/a407fc28-59dc-11ed-8fd2-fa163e5d098a',
+    // playStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d',
+    appStoreLink: '/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d'
+  },
+  // {
+  //   id: 3,
+  //   title: 'Перчатки, нитриловые',
+  //   imgUrl: '/assets/images/products/benovy.png',
+  //   description: `Высокая прочность, комфорт и тактильная чувствительность, устойчивость к химикатам, без аллергенов, удобство использования`,
+  //   playStoreLink: '/products/search/0b68e3c2-59d9-11ed-8fd2-fa163e5d098a',
+  //   link: '/products/search/0b68e3c2-59d9-11ed-8fd2-fa163e5d098a',
+  //   appStoreLink: '/'
+  // }
+  ]; // service list
 
 export const serviceList = [
   {

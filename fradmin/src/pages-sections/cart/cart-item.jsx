@@ -60,11 +60,11 @@ export default function CartItem({
       </IconButton>
 
       <FlexBox p={2} rowGap={2} width="100%" flexDirection="column">
-        <Link href={`/products/${slug}`}>
-          <Span ellipsis fontWeight="600" fontSize={18}>
+        {/*<Link href={`/products/${slug}`}>*/}
+          <Span fontWeight="600" fontSize={18}>
             {name}
           </Span>
-        </Link>
+        {/*</Link>*/}
 
         {
         /* PRODUCT PRICE SECTION */

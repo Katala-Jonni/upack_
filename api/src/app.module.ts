@@ -14,32 +14,34 @@ import { StageModule } from './stage/stage.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { BasketModule } from './basket/basket.module';
 import { OrderModule } from './order/order.module';
+import { OrderEmailModule } from "@app/orderEmail/order.module";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    DatabaseModule,
-    AuthModule,
-    UserModule,
-    CategoryModule,
-    ProductModule,
-    PlaceModule,
-    CouponModule,
-    StageModule,
-    FeedbackModule,
-    BasketModule,
-    OrderModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true
+        }),
+        DatabaseModule,
+        AuthModule,
+        UserModule,
+        CategoryModule,
+        ProductModule,
+        PlaceModule,
+        CouponModule,
+        StageModule,
+        FeedbackModule,
+        BasketModule,
+        OrderEmailModule
+        // OrderModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService]
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
-  }
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes({
+            path: '*',
+            method: RequestMethod.ALL
+        });
+    }
 }

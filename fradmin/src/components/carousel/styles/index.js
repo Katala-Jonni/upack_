@@ -65,7 +65,8 @@ export const Dot = styled("span", {
   cursor: "pointer",
   borderRadius: "50%",
   position: "relative",
-  border: `1px solid ${dotColor || theme.palette.secondary.main}`,
+  border: `1px solid #2B3445`,
+  // border: `1px solid ${dotColor || theme.palette.secondary.main}`,
   "&:after": {
     scale: 0,
     inset: 0,
@@ -76,7 +77,8 @@ export const Dot = styled("span", {
     borderRadius: "50%",
     position: "absolute",
     transition: "scale 500ms ease-in-out",
-    backgroundColor: dotColor || theme.palette.secondary.main
+    backgroundColor: '#2B3445'
+    // backgroundColor: dotColor || theme.palette.secondary.main
   }
 }));
 export const ArrowButton = styled(Box)(({

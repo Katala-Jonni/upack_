@@ -2,20 +2,25 @@ import axios from 'axios';
 import { apiCall, apiCallFiles } from './apiCall';
 
 class Fetch {
-  async find(url) {
+  async find(url, data = {}) {
     return apiCall()
-      .get(url)
+      .get(url, data)
       .catch((error) => {
         return error.response;
       });
   }
 
   async create(url, payload) {
-    return apiCall()
-      .post(url, payload)
-      .catch(error => {
-        return error.response;
-      });
+    try {
+      return apiCall()
+        .post(url, payload)
+        .catch(error => {
+          return error.response;
+        });
+    } catch (e) {
+      console.log('apiCallCreate', e);
+    }
+
   }
 
   async update(url, payload) {

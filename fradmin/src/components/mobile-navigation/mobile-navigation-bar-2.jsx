@@ -79,9 +79,16 @@ const list = [{
   title: "Корзина",
   Icon: ShoppingBagOutlined,
   href: "/cart"
-}, {
-  title: "Профиль",
-  Icon: User2,
-  href: "/profile"
-}];
+},
+  {
+    title: "Начать чат",
+    Icon: User2,
+    href: "https://wa.me/79212265546"
+  },
+  {
+    title: "Профиль",
+    Icon: User2,
+    href: "/profile"
+  }
+];
 export default memo(MobileNavigationBar2);

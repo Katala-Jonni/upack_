@@ -13,5 +13,6 @@ export const routes = {
   dashboard: '/dashboard',
   new: '/new',
   stage: '/stage',
-  orders: '/orders'
+  orders: '/orders',
+  currentCategories: '/products/search'
 };

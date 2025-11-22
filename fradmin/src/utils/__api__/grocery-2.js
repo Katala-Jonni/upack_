@@ -9,20 +9,20 @@ const limitedParallelRequests = async (urls, limit, products) => {
   for (const url of urls) {
     const promise = axios.get(new URL(url).toString(), { headers })
       .then(async (response) => {
-            const storageFile = `${response.data['ХранилищеДвоичныхДанных_Key']}`;
-            const urlFileStorage = `https://1cfresh.com/a/sbm/2010500/odata/standard.odata/Catalog_ХранилищеДвоичныхДанных(guid'${storageFile}')?$format=json`;
-            const responseApiFile = await axios.get(new URL(urlFileStorage).toString(), { headers });
-            // productFile = {
-            //   ...productFile,
-            //   [items[i].refKey]: {
-            //     file: `data:image/jpg;base64, ${responseApiFile.data['ДвоичныеДанные_Base64Data']}`
-            //   }
-            // };
-            // fileData.push(productFile);
-            // console.log('responseApiFile.data', responseApiFile.data);
+        const storageFile = `${response.data['ХранилищеДвоичныхДанных_Key']}`;
+        const urlFileStorage = `https://1cfresh.com/a/sbm/2010500/odata/standard.odata/Catalog_ХранилищеДвоичныхДанных(guid'${storageFile}')?$format=json`;
+        const responseApiFile = await axios.get(new URL(urlFileStorage).toString(), { headers });
+        // productFile = {
+        //   ...productFile,
+        //   [items[i].refKey]: {
+        //     file: `data:image/jpg;base64, ${responseApiFile.data['ДвоичныеДанные_Base64Data']}`
+        //   }
+        // };
+        // fileData.push(productFile);
+        // console.log('responseApiFile.data', responseApiFile.data);
         // console.log('responseApiFile', responseApiFile.data);
         results.push(response.data.value ? response.data.value : response.data);
-            // return `data:image/jpg;base64, ${responseApiFile.data['ДвоичныеДанные_Base64Data']}`;
+        // return `data:image/jpg;base64, ${responseApiFile.data['ДвоичныеДанные_Base64Data']}`;
       })
       .catch(error => {
         console.error(`Ошибка запроса по URL ${url}:`, error);
@@ -37,10 +37,20 @@ const limitedParallelRequests = async (urls, limit, products) => {
   return results;
 };
 
-async function startLoadCategory(url) {
+export async function startLoadCategory(url) {
   try {
     const res = await fetchApi.find(url);
-    console.log('startLoadCategory', res);
+    // console.log('startLoadCategory', res);
+    return res.data;
+  } catch (e) {
+    console.error('startLoadCategory', e);
+  }
+}
+
+export async function startLoadSearch(url) {
+  try {
+    console.log('url', url);
+    const res = await fetchApi.find(url);
     return res.data;
   } catch (e) {
     console.error('startLoadCategory', e);
@@ -57,7 +67,7 @@ async function startLoadCategory(url) {
 const iconsCategory = [
   '/assets/images/icons/categories.svg',
   '/assets/images/icons/category.svg',
-  '/assets/images/icons/arrow-right.svg',
+  '/assets/images/icons/arrow-right.svg'
 ];
 const headers = {
   'Authorization': `Basic b2RhdGEudXNlcjpVejVGRng9a1xX4oCTMXFdS25u`
@@ -560,7 +570,7 @@ export const viewProductsCategoryDataBae = (array) => {
       size: null,
       colors: [],
       discount: 0,
-      thumbnail: item.thumbnail,
+      thumbnail: item.thumbnail ? item.thumbnail : '/assets/images/nofoto.jpg',
       // thumbnail: '/assets/images/products/Automotive/1.Ford2019.png',
       images: ['/assets/images/products/Automotive/1.Ford2019.png', '/assets/images/products/Automotive/1.Ford2019.png'],
       categories: ['automotive'],
@@ -626,7 +636,7 @@ const getCategories = cache(async () => {
   // console.log(response);
   // const categoriesApi = arrayToTree(responseApi.data.value);
   // console.log('viewCategories(categoriesApi)', viewCategories(categoriesApi));
-  if (response && response.categories){
+  if (response && response.categories) {
     return viewCategoriesDatabase(response.categories);
   }
   // return viewCategories(categoriesApi);
@@ -670,7 +680,7 @@ const getCategoriesId = cache(async (param) => {
   //   'Authorization': `Basic J29kYXRhLnVzZXInOidVejVGRng9a1xX4oCTMXFdS25uLyc=`
   // };
   const response = await startLoadCategory(`${routes.categories}/${param}`);
-  // console.log('response найти всех по refkey', response);
+  console.log('response найти всех по refkey', response);
   // const url = `https://1cfresh.com/a/sbm/2010500/odata/standard.odata/Catalog_Номенклатура?$filter=Parent_Key eq guid'${param}' and IsFolder eq true and DeletionMark eq false and startswith(Description, 'Я_') eq false&$select=${selectProps}&$format=json`;
   // const responseApi = await axios.get(url, { headers: headers });
   // console.log('responseApi', responseApi);
@@ -692,7 +702,10 @@ const getCategoriesId = cache(async (param) => {
   //   };
   //   newCategoriesResults.push(dataObj);
   // });
-  return viewCategoriesDatabase(response.categories);
+  return {
+    categories: viewCategoriesDatabase(response.categories),
+    parentCategory: response.parentCategory
+  }
   // return viewCategories(responseApi.data.value);
 });
 
@@ -718,12 +731,12 @@ const getCategoryProducts = cache(async (categoryId, page) => {
 
     const imgUrl = products[0].thumbnail;
     // console.log('imgUrl', imgUrl);
-      // .then(res => {
-      //   console.log(res.data);
-      // })
-      // .catch(error => {
-      //   console.log(`Ошибка загрузки изображения ${products[0].thumbnail}`, error);
-      // });
+    // .then(res => {
+    //   console.log(res.data);
+    // })
+    // .catch(error => {
+    //   console.log(`Ошибка загрузки изображения ${products[0].thumbnail}`, error);
+    // });
 
     // console.log('products', products);
     // const products = await makeRequestsFile(responseApiProductsCategory.data.value);
@@ -757,6 +770,87 @@ const getCategoryProducts = cache(async (categoryId, page) => {
     // console.log('viewProductsCategoryDataBae(products)', viewProductsCategoryDataBae(products));
     return {
       products: viewProductsCategoryDataBae(products),
+      countCollection: response.countCollection
+    };
+  } catch (e) {
+    console.log('error', e);
+  }
+
+  // console.log('responseApi', responseApi);
+  // const categoriesApi = arrayToTree(responseApi.data.value);
+  // const newCategoriesResults = [];
+  // categoriesApi.forEach(item => {
+  //   const dataObj = {
+  //     id: item.Ref_Key,
+  //     name: item.Description,
+  //     icon: null,
+  //     image: iconsCategory[Math.floor(Math.random() * 5)],
+  //     slug: item.Description,
+  //     parent: [],
+  //     description: 'Upto 60% off',
+  //     for: {
+  //       demo: 'grocery-2',
+  //       type: 'top-categories'
+  //     }
+  //   };
+  //   newCategoriesResults.push(dataObj);
+  // });
+});
+
+const getSearchProducts = cache(async (title, page = 1) => {
+  try {
+    console.log('title, page', title, page);
+    const response = await startLoadSearch(`${routes.products}/search/?title=${title}&page=${page}`);
+    // console.log('getSearchProductsResponse', response);
+
+    // const urProductsCategory = `https://1cfresh.com/a/sbm/2010500/odata/standard.odata/Catalog_Номенклатура?$filter=Parent_Key eq guid'${categoryId}' and IsFolder eq false and DeletionMark eq false&$select=${selectProductProps}&$format=json`;
+    // const responseApiProductsCategory = await axios.get(urProductsCategory, { headers: headers });
+    // ФайлКартинки_Key
+    // console.log('responseApiProductsCategory.data.value', responseApiProductsCategory.data.value);
+    // const products = await makeRequestsFileDatabase(response.products);
+    // console.log('products', products);
+
+    // const imgUrl = products[0].thumbnail;
+    // console.log('imgUrl', imgUrl);
+    // .then(res => {
+    //   console.log(res.data);
+    // })
+    // .catch(error => {
+    //   console.log(`Ошибка загрузки изображения ${products[0].thumbnail}`, error);
+    // });
+
+    // console.log('products', products);
+    // const products = await makeRequestsFile(responseApiProductsCategory.data.value);
+    // Можно отдать категорию из выше запроса
+
+
+    // console.log('productsGetCategoryProducts', products);
+    // const ownerFiles = await makeRequestsOwnerFiles(files);
+    // const registerFiles = await makeRequestsRegisterFiles(ownerFiles);
+
+
+    // const ownerUrl = `https://1cfresh.com/a/sbm/2010500/odata/standard.odata/Catalog_НоменклатураПрисоединенныеФайлы?$filter=ВладелецФайла_Key eq guid${ownerID}&$format=json`;
+    // console.log('files', files);
+    // console.log('registerFiles', registerFiles);
+
+    // products.filter(item => {
+    //   if (item['ФайлКартинки@navigationLinkUrl']){
+    //     getRequest(item);
+    //     // const imageFile = `https://1cfresh.com/a/sbm/2010500/odata/standard.odata/${item['ФайлКартинки@navigationLinkUrl']}?$format=json`;
+    //     // const responseApiProductsCategory = await axios.get(imageFile, { headers: headers });
+    //     // console.log('responseApiProductsCategory', responseApiProductsCategory.data.value);
+    //     // ВладелецФайла_Key
+    //     // разширение указать
+    //   }
+    // });
+    // console.log('products', products);
+    // const responseApi = await axios.get(url, { headers: headers });
+    // console.log('responseApigetCategoryProducts', responseApi);
+    // console.log('responseApiProductsCategory', responseApiProductsCategory);
+    // return [];
+    // console.log('viewProductsCategoryDataBae(products)', viewProductsCategoryDataBae(products));
+    return {
+      products: viewProductsCategoryDataBae(response.products),
       countCollection: response.countCollection
     };
   } catch (e) {
@@ -877,5 +971,6 @@ export default {
   getCategoriesId,
   getCategoryProducts,
   getProductsId,
-  getImagesBase64
+  getImagesBase64,
+  getSearchProducts
 };

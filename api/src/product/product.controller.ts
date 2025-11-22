@@ -46,6 +46,18 @@ export class ProductController {
         return resultRefreshFile;
     }
 
+    @Get('search')
+    async findSearchProducts(
+        @Query('page') page: number,
+        @Query('title') title: string,
+        @Query('sort') sort: string,
+    ): Promise<any> {
+        console.log('ControllerSearchPage', page);
+        console.log('ControllerSearchTitle', title);
+        const result = await this.productService.findSearchProducts(title, page, sort);
+        return result;
+    }
+
     @Get()
     // async findAllProducts(): Promise<ProductsResponseInterface> {
     async findAllProducts(): Promise<ProductsResponseInterface> {
@@ -57,11 +69,12 @@ export class ProductController {
     async findAllCategoryProducts(
         @Param('categoryRefKey') categoryRefKey: string,
         @Query('page') page: number,
+        @Query('sort') sort: string,
     ): Promise<ProductsResponseInterface> {
         // console.log('pageFindAllCategoryProducts', page);
         const category = await this.categoryService.findOneCategory(categoryRefKey);
         // console.log('findAllCategoryProductscategory', category);
-        const { products, countCollection } = await this.productService.findAllCategoryProducts(category.refKey, page);
+        const { products, countCollection } = await this.productService.findAllCategoryProducts(category.refKey, page, sort);
         return this.productService.buildProductsResponse(products, countCollection);
     }
 

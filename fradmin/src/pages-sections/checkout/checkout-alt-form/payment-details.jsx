@@ -33,48 +33,63 @@ const PaymentDetails = ({
     p: 3,
     mb: 3
   }}>
-      {/*<Heading number={3} title="Payment Details" />*/}
+      <Heading number={2} title="Укажите контактную информацию" />
 
       {
       /* CARD INFORMATION FORM  */
     }
-      {/*<Box mb={3}>*/}
-      {/*  <Paragraph mb={1.5}>Enter Card Information</Paragraph>*/}
+      <Box mb={3}>
+        {/*<Paragraph mb={1.5}>Enter Card Information</Paragraph>*/}
 
-      {/*  <Grid container spacing={2}>*/}
-      {/*    <Grid item sm={6} xs={12}>*/}
-      {/*      <TextField fullWidth type="text" name="cardHolderName" onChange={handleChange} label="Enter Your Name" value={values.cardHolderName} error={!!touched.cardHolderName && !!errors.cardHolderName} helperText={touched.cardHolderName && errors.cardHolderName} />*/}
-      {/*    </Grid>*/}
+        <Grid container spacing={2}>
+          <Grid item sm={6} xs={12}>
+            <TextField fullWidth type="text" name="surname" label="Фамилия" value={values.surname} onChange={handleChange} helperText={touched.surname && errors.surname} error={touched.surname && Boolean(errors.surname)} />
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <TextField fullWidth type="text" name="name" value={values.name} onChange={handleChange} label="Имя" helperText={touched.name && errors.name} error={touched.name && Boolean(errors.name)} />
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <TextField fullWidth type="text" name="address" label="Адрес доставки" value={values.address} onChange={handleChange} helperText={touched.address && errors.address} error={touched.address && Boolean(errors.address)} />
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <TextField fullWidth type="text" name="phone" value={values.phone} onChange={handleChange} label="Контактный номер телефона" helperText={touched.phone && errors.phone} error={touched.phone && Boolean(errors.phone)} />
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <TextField fullWidth type="text" name="email" label="Укажите E-mail" value={values.email} onChange={handleChange} helperText={touched.email && errors.email} error={touched.email && Boolean(errors.email)} />
+          </Grid>
+          <Grid item sm={6} xs={12}>
+            <TextField fullWidth type="text" name="organization" value={values.organization} label="Наименование организации, если организация" onChange={handleChange} helperText={touched.organization && errors.organization} error={touched.organization && Boolean(errors.organization)} />
+          </Grid>
 
-      {/*    <Grid item sm={6} xs={12}>*/}
-      {/*      <TextField fullWidth type="number" name="cardNumber" onChange={handleChange} label="Enter Your Card Number" value={values.cardNumber} error={!!touched.cardNumber && !!errors.cardNumber} helperText={touched.cardNumber && errors.cardNumber} />*/}
-      {/*    </Grid>*/}
+          {/*<Grid item sm={6} xs={12}>*/}
+          {/*  <TextField fullWidth type="number" name="cardNumber" onChange={handleChange} label="Enter Your Card Number" value={values.cardNumber} error={!!touched.cardNumber && !!errors.cardNumber} helperText={touched.cardNumber && errors.cardNumber} />*/}
+          {/*</Grid>*/}
 
-      {/*    <Grid item sm={4} xs={12}>*/}
-      {/*      <TextField select fullWidth type="number" name="cardMonth" onChange={handleChange} value={values.cardMonth} label="Expire Card Month" error={!!touched.cardMonth && !!errors.cardMonth} helperText={touched.cardMonth && errors.cardMonth}>*/}
-      {/*        {months.map(item => <MenuItem value={item} key={item}>*/}
-      {/*            {item}*/}
-      {/*          </MenuItem>)}*/}
-      {/*      </TextField>*/}
-      {/*    </Grid>*/}
+          {/*<Grid item sm={4} xs={12}>*/}
+          {/*  <TextField select fullWidth type="number" name="cardMonth" onChange={handleChange} value={values.cardMonth} label="Expire Card Month" error={!!touched.cardMonth && !!errors.cardMonth} helperText={touched.cardMonth && errors.cardMonth}>*/}
+          {/*    {months.map(item => <MenuItem value={item} key={item}>*/}
+          {/*        {item}*/}
+          {/*      </MenuItem>)}*/}
+          {/*  </TextField>*/}
+          {/*</Grid>*/}
 
-      {/*    <Grid item sm={4} xs={12}>*/}
-      {/*      <TextField select fullWidth type="number" name="cardYear" onChange={handleChange} value={values.cardYear} label="Expire Card Year" error={!!touched.cardYear && !!errors.cardYear} helperText={touched.cardYear && errors.cardYear}>*/}
-      {/*        {years.map(item => <MenuItem value={item} key={item}>*/}
-      {/*            {item}*/}
-      {/*          </MenuItem>)}*/}
-      {/*      </TextField>*/}
-      {/*    </Grid>*/}
+          {/*<Grid item sm={4} xs={12}>*/}
+          {/*  <TextField select fullWidth type="number" name="cardYear" onChange={handleChange} value={values.cardYear} label="Expire Card Year" error={!!touched.cardYear && !!errors.cardYear} helperText={touched.cardYear && errors.cardYear}>*/}
+          {/*    {years.map(item => <MenuItem value={item} key={item}>*/}
+          {/*        {item}*/}
+          {/*      </MenuItem>)}*/}
+          {/*  </TextField>*/}
+          {/*</Grid>*/}
 
-      {/*    <Grid item sm={4} xs={12}>*/}
-      {/*      <TextField fullWidth type="number" name="cardCVC" label="CVC/CVV" value={values.cardCVC} onChange={handleChange} error={!!touched.cardCVC && !!errors.cardCVC} helperText={touched.cardCVC && errors.cardCVC} />*/}
-      {/*    </Grid>*/}
+          {/*<Grid item sm={4} xs={12}>*/}
+          {/*  <TextField fullWidth type="number" name="cardCVC" label="CVC/CVV" value={values.cardCVC} onChange={handleChange} error={!!touched.cardCVC && !!errors.cardCVC} helperText={touched.cardCVC && errors.cardCVC} />*/}
+          {/*</Grid>*/}
 
-      {/*    <Grid item xs={12}>*/}
-      {/*      <FormControlLabel label="Save this card" control={<Checkbox size="small" />} onChange={e => console.log(e.target)} />*/}
-      {/*    </Grid>*/}
-      {/*  </Grid>*/}
-      {/*</Box>*/}
+          {/*<Grid item xs={12}>*/}
+          {/*  <FormControlLabel label="Save this card" control={<Checkbox size="small" />} onChange={e => console.log(e.target)} />*/}
+          {/*</Grid>*/}
+        </Grid>
+      </Box>
 
       {
       /* SAVED CARD LIST */

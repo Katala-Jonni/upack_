@@ -11,9 +11,9 @@ export default function ListItem({
   title,
   icon
 }) {
-  const Icon = appIcons[icon];
+  // const Icon = appIcons[icon];
   return <FlexBox py={1} gap={1.5} alignItems="center">
-      <Icon fontSize="small" />
+      {/*<Icon fontSize="small" />*/}
       <Span fontWeight={600}>{title}</Span>
     </FlexBox>;
 }

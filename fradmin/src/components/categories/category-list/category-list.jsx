@@ -7,14 +7,17 @@ import { categoryMenus } from "data/navigations"; // STYLED COMPONENT
 import {categoryNavigation} from '../../../__server__/__db__/grocery-2/data';
 
 import { StyledRoot } from "./styles";
+import useCategories from '../../../hooks/useCategories';
 
 export default function CategoryList({
   open,
-  position = "absolute"
+  position = "absolute",
 }) {
+  const {state} = useCategories();
   return <StyledRoot open={open} position={position}>
-      {categoryNavigation.map(item => {
+    {state.categories?.map(item => {
       const {
+        refKey,
         href,
         title,
         children,
@@ -23,7 +26,19 @@ export default function CategoryList({
         offer
       } = item;
       const MegaMenu = component === MegaMenu1.name ? MegaMenu1 : MegaMenu2;
-      return <CategoryListItem key={title} href={href} icon={icon} title={title} caret={!!children} render={component ? <MegaMenu data={children} banner={offer} /> : null} />;
+      return <CategoryListItem key={refKey} href={`/products/search/${refKey}`} icon={icon} title={title} caret={!!children} render={component ? <MegaMenu data={children} banner={offer} /> : null} />;
     })}
+    {/*  {categoryNavigation.map(item => {*/}
+    {/*  const {*/}
+    {/*    href,*/}
+    {/*    title,*/}
+    {/*    children,*/}
+    {/*    component,*/}
+    {/*    icon,*/}
+    {/*    offer*/}
+    {/*  } = item;*/}
+    {/*  const MegaMenu = component === MegaMenu1.name ? MegaMenu1 : MegaMenu2;*/}
+    {/*  return <CategoryListItem key={title} href={href} icon={icon} title={title} caret={!!children} render={component ? <MegaMenu data={children} banner={offer} /> : null} />;*/}
+    {/*})}*/}
     </StyledRoot>;
 }
