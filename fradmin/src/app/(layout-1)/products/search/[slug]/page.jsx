@@ -14,13 +14,14 @@ export const metadata = {
 };
 export default async function ProductSearch({ params }) {
   try {
-    const categories = await api.getCategoriesId(params.slug);
+    const { categories, parentCategory } = await api.getCategoriesId(params.slug);
     if (!categories.length) {
-      const {products, countCollection} = await api.getCategoryProducts(params.slug);
+      const { products, countCollection } = await api.getCategoryProducts(params.slug);
       // console.log('categoriesProductSearch', products);
-      return <ProductSearchPageView categories={categories} slug={params.slug} products={products} countCollection={countCollection}/>;
+      return <ProductSearchPageView parentCategory={parentCategory} categories={categories} slug={params.slug}
+                                    products={products} countCollection={countCollection}/>;
     }
-    return <ProductSearchPageView categories={categories} slug={params.slug}/>;
+    return <ProductSearchPageView parentCategory={parentCategory} categories={categories} slug={params.slug}/>;
   } catch (error) {
     notFound();
   }

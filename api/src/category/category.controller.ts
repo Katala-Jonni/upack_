@@ -33,7 +33,7 @@ export class CategoryController {
   ): Promise<CategoriesResponseInterface> {
     const parrent = await this.categoryService.findOneCategory(slug);
     const categories = await this.categoryService.findAllParentCategory(parrent.refKey);
-    return this.categoryService.buildCategoriesResponse(categories);
+    return this.categoryService.buildCategoriesResponse(categories, parrent);
   }
 
   @Get('category/:refKey')

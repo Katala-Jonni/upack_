@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup'; // LOCAL CUSTOM COMPONENTS
 
@@ -14,51 +14,61 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Link from '@mui/material/Link';
 import { log } from 'next/dist/server/typescript/utils';
+import { deleteStorage, storageKey } from '../../../storage';
+import useCart from '../../../hooks/useCart';
+import { Paragraph } from '../../../components/Typography';
 
 const checkoutSchema = yup.object().shape({
-  // card: yup.string().required("required"),
-  date: yup.string().required("Укажите желаемую дату доставки"),
-  time: yup.string().required("Укажите желаемое время доставки"),
-  address: yup.string().required("Укажите контактную информацию"),
-  // cardHolderName: yup.string().required("required"),
-  // cardNumber: yup.number().required("required"),
-  // cardMonth: yup.string().required("required"),
-  // cardYear: yup.number().required("required"),
-  // cardCVC: yup.number().required("required"),
-  // voucher: yup.string(),
-  // name: yup.string().required("Заполните поле"),
-  // phone: yup.number().required("Заполните поле, только цифры"),
-  // street1: yup.string().required("Заполните поле"),
-  // street2: yup.string().required("Заполните поле")
+  date: yup.string().required('Укажите желаемую дату доставки'),
+  time: yup.string().required('Укажите желаемое время доставки'),
+  address: yup.string().required('Укажите адрес доставки'),
+  name: yup.string().required('Укажите имя'),
+  surname: yup.string().required('Укажите фамилию'),
+  email: yup.string().email('формат u_pack@internet.ru').required('Укажите E-mail'),
+  phone: yup.number().required('Укажите номер телефона')
 });
+
+
 export default function CheckoutForm() {
   const router = useRouter();
   const [hasVoucher, setHasVoucher] = useState(false);
+  const {
+    state,
+    dispatch
+  } = useCart();
+
+  useEffect(() => {
+    if (!state.cart.length) {
+      return router.push('/');
+    }
+  });
 
   const toggleHasVoucher = () => setHasVoucher(has => !has);
 
   const initialValues = {
-    name: '',
+    organization: '',
     phone: '',
     email: '',
-    street2: '',
+    address: '',
     comment: '',
-    // card: "",
-    date: "",
-    time: "",
-    address: "",
-    // voucher: "",
-    // cardHolderName: "",
-    // cardNumber: "",
-    // cardMonth: "",
-    // cardYear: "",
-    // cardCVC: ""
+    date: '',
+    time: '',
+    surname: '',
+    name: ''
   };
 
   const handleFormSubmit = async (values, data) => {
+    // const error = !values.street || !values.phone || !values.mail || !values.date || !values.time;
+    // if (error) return false;
     console.log('valuesCheckout-alt-form', values);
     console.log('valuesCheckout-alt-formdata', data);
-    // data.resetForm({});
+    dispatch({
+      type: 'REMOVE_CART_AMOUNT',
+      payload: []
+    });
+    localStorage.removeItem(storageKey);
+    data.resetForm({});
+    // router.push('/');
     // router.push("/payment");
   };
 
@@ -73,18 +83,25 @@ export default function CheckoutForm() {
       }) => {
       // CHANGE FIELD VALUE DATA
       const handleFieldValueChange = (value, fieldName) => {
-        console.log('CheckoutFormVvalue, fieldName', value, fieldName);
+        // console.log('CheckoutFormVvalue, fieldName', value, fieldName);
         setFieldValue(fieldName, value);
       };
-      console.log('CheckoutFormErrors', errors);
 
       return <form onSubmit={handleSubmit}>
         {/*<ContactInfo handleFieldValueChange={handleFieldValueChange} values={values}/>*/}
-        <DeliveryDate errors={errors} values={values} touched={touched} handleChange={handleChange} />
-        <DeliveryAddress handleFieldValueChange={handleFieldValueChange} values={values} errors={errors}/>
+        <DeliveryDate errors={errors} values={values} touched={touched} handleChange={handleChange}/>
+        {/*<DeliveryAddress handleFieldValueChange={handleFieldValueChange} values={values} errors={errors}/>*/}
+        <PaymentDetails values={values} errors={errors} touched={touched} hasVoucher={hasVoucher}
+                        handleChange={handleChange} toggleHasVoucher={toggleHasVoucher}
+                        handleFieldValueChange={handleFieldValueChange}/>
         <CommentDetails values={values} handleFieldValueChange={handleFieldValueChange}/>
-        {/*<PaymentDetails values={values} errors={errors} touched={touched} hasVoucher={hasVoucher} handleChange={handleChange} toggleHasVoucher={toggleHasVoucher} handleFieldValueChange={handleFieldValueChange} />*/}
-        <Button type="submit" color="primary" variant="contained" sx={{ mr: 1 }}>
+        <Button
+          type="submit"
+          color="primary"
+          variant="contained"
+          sx={{ mr: 1 }}
+          disabled={!!errors.street || !!errors.phone || !!errors.mail || !!errors.date || !!errors.time}
+        >
           Оформить заказ
         </Button>
         {/*<Button*/}

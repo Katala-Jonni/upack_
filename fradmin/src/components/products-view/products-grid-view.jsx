@@ -17,42 +17,60 @@ import Loading from '../../app/loading'; // CUSTOM DATA MODEL
 export default function ProductsGridView({
                                            products,
                                            countCollection,
+                                           sortValue,
+                                           setPage,
+                                           page,
+                                           handleChangeSortFilterProducts,
+                                           setLoad,
+                                           load,
                                            ...props
                                          }) {
   const [prod, setProd] = useState([]);
-  const [load, setLoad] = useState(false);
-  useEffect(() => {
-    setProd(prod.length ? prod : products);
-    // setLoad(false);
-  });
+  // const [load, setLoad] = useState(false);
+
+  // useEffect(() => {
+  //   setProd(products);
+  //   // return () => {
+  //   //   setPage(1);
+  //   // };
+  // }, [products]);
 
   const onChange = async (event, page) => {
     try {
-      console.log('ProductsGridViewonChangeload', load);
       await setLoad(true);
       window.scrollTo(0, 0);
-      const response = await fetch(`/api/products/${prod[0].parent}?page=${page}`);
-      const result = await response.json();
-      const newProducts = viewProductsCategoryDataBae(result.products);
-      setProd(newProducts);
+      await handleChangeSortFilterProducts(page);
+      // const path = `/api/products/${prod[0].parent}?page=${page}&sort=${sortValue}`;
+      // const searchPath = `/api/products/search?title=${props.searchTitle}&page=${page}&sort=${sortValue}`;
+      //searchTitle
+      // const response = await fetch(props.searchTitle ? searchPath : path);
+      // const result = await response.json();
+      // const newProducts = viewProductsCategoryDataBae(result.products);
+      // setProd(newProducts);
+      // setPage(page);
       setLoad(false);
+      // await setLoad(true);
+      // window.scrollTo(0, 0);
+      // const path = `/api/products/${prod[0].parent}?page=${page}&sort=${sortValue}`;
+      // const searchPath = `/api/products/search?title=${props.searchTitle}&page=${page}&sort=${sortValue}`;
+      // //searchTitle
+      // const response = await fetch(props.searchTitle ? searchPath : path);
+      // const result = await response.json();
+      // const newProducts = viewProductsCategoryDataBae(result.products);
+      // setProd(newProducts);
+      // setPage(page);
+      // setLoad(false);
     } catch (e) {
       console.log('Ошибка в запросе onChange в компоненте product-grid-view', e);
     }
 
   };
 
-  if (!load) {
-    console.log('ProductsGridViewLoading');
-    // return null;
-    // return <Loading/>;
-  }
-
   return <Fragment>
     {load
       ? <Loading/>
       : <Grid container spacing={3}>
-        {prod.map(item => <Grid item lg={3} md={3} sm={6} xs={6} key={item.id}>
+        {products.map(item => <Grid item lg={3} md={3} sm={6} xs={6} key={item.id}>
           <ProductCard1 id={item.id} slug={item.slug} title={item.title} price={item.price} rating={item.rating}
                         imgUrl={item.thumbnail} discount={item.discount} comment={item.comment} count={item.count}/>
         </Grid>)}
@@ -61,7 +79,8 @@ export default function ProductsGridView({
 
     <FlexBetween flexWrap="wrap" mt={4}>
       <Span color="grey.600">{`Просмотрите все товары, используйте постраничную навигацию`}</Span>
-      <Pagination count={Math.ceil(countCollection / 8)} variant="outlined" color="primary" onChange={(onChange)}/>
+      <Pagination page={page} count={Math.ceil(countCollection / 8)} variant="outlined" color="primary"
+                  onChange={(onChange)}/>
     </FlexBetween>
   </Fragment>;
 

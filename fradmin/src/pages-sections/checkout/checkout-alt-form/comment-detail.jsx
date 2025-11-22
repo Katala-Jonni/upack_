@@ -1,23 +1,23 @@
 // MUI
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import Collapse from "@mui/material/Collapse";
-import MenuItem from "@mui/material/MenuItem";
-import Checkbox from "@mui/material/Checkbox";
-import TextField from "@mui/material/TextField";
-import ButtonBase from "@mui/material/ButtonBase";
-import FormControlLabel from "@mui/material/FormControlLabel"; // FORMIK
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import ButtonBase from '@mui/material/ButtonBase';
+import FormControlLabel from '@mui/material/FormControlLabel'; // FORMIK
 
 // LOCAL CUSTOM COMPONENT
-import Heading from "./heading"; // GLOBAL CUSTOM COMPONENTS
+import Heading from './heading'; // GLOBAL CUSTOM COMPONENTS
 
-import LazyImage from "components/LazyImage";
-import { FlexBox } from "components/flex-box";
-import { Paragraph } from "components/Typography"; // DATA
+import LazyImage from 'components/LazyImage';
+import { FlexBox } from 'components/flex-box';
+import { Paragraph } from 'components/Typography'; // DATA
 
-import { months, years } from "data/months-years";
+import { months, years } from 'data/months-years';
 import Divider from '@mui/material/Divider';
 import { Span } from '../../../components/Typography'; // CUSTOM DATA MODEL
 
@@ -31,11 +31,17 @@ const CommentDetails = ({
                           toggleHasVoucher,
                           handleFieldValueChange
                         }) => {
+  function handleChangeValue(e) {
+    // console.log('e.target', e.target.comment);
+    // console.log('e.target.value', e.target.value);
+    return handleFieldValueChange(e.target.value, 'comment');
+  };
+  // console.log('e.target', values);
   return <Card sx={{
     p: 3,
     mb: 3
   }}>
-    <Heading number={3} title="Комментарий к заказу (по желанию)" />
+    <Heading number={3} title="Комментарий к заказу (по желанию)"/>
     {/*<FlexBox alignItems="center" columnGap={1} mb={2}>*/}
     {/*  <Span fontWeight="600">Срок доставки:</Span>*/}
     {/*  <Span fontWeight="600">после согласования заказа</Span>*/}
@@ -44,11 +50,11 @@ const CommentDetails = ({
     {
       /* COMMENTS TEXT FIELD */
     }
-    <TextField variant="outlined" rows={6} fullWidth multiline handleFieldValueChange={handleFieldValueChange} name={values.comment}/>
+    <TextField variant="outlined" rows={6} fullWidth multiline onChange={handleChangeValue} name='comment'/>
 
     <Divider sx={{
       mb: 2
-    }} />
+    }}/>
 
     {
       /* CARD INFORMATION FORM  */

@@ -35,3 +35,17 @@ export const PLAY_APP_STORE_DATA = [{
   title: "App Store",
   subtitle: "Download on the"
 }];
+
+
+export const MAIN_BUNNER__DATA = [{
+  url: "/products/search/dba876ba-82ba-11ed-8aa0-fa163eb77d5d",
+  icon: PlayStore,
+  title: "1Земля",
+  subtitle: "Выбрать"
+}, {
+  url: "/",
+  icon: AppleStore,
+  title: "App Store",
+  subtitle: "Download on the"
+}];
+

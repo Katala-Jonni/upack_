@@ -121,8 +121,8 @@ export class CategoryService {
     return `${slug}-${randomString}`;
   }
 
-  buildCategoriesResponse(categories: Category[]): CategoriesResponseInterface {
-    return { categories, categoriesCount: categories.length };
+  buildCategoriesResponse(categories: Category[], parent: any = null): CategoriesResponseInterface {
+    return { categories, categoriesCount: categories.length, parentCategory:  parent};
   }
 
   buildCategoryResponse(category: Category): CategoryResponseInterface {

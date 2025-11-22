@@ -284,9 +284,10 @@ async function makeRequestsFile(items) {
     //             name: `${el}.jpg`
     //         }
     //     });
-    const resultCreateFile = await fileArrayStorage(storageData);
-
-    console.log('resultCreateFile', resultCreateFile);
+    if (storageData && storageData.length){
+        const resultCreateFile = await fileArrayStorage(storageData);
+        console.log('resultCreateFile', resultCreateFile);
+    }
 
 
     // console.log('data', data)

@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState, Fragment } from 'react';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
@@ -23,35 +24,87 @@ import ProductsListView from 'components/products-view/products-list-view'; // P
 
 import productDatabase from 'data/product-database';
 import GrocerySideNav from '../../../components/page-sidenav/grocery-side-nav';
-import api from '../../../utils/__api__/grocery-2';
+import api, { viewProductsCategoryDataBae } from '../../../utils/__api__/grocery-2';
 import StickyWrapper from '../../../components/sticky-wrapper';
 import Section3 from '../../grocery-2/section-3/section-3';
+import useCategories from '../../../hooks/useCategories';
+import logo from '../../../components/footer/components/logo';
 
 const SORT_OPTIONS = [
   {
     label: 'По умолчанию',
-    value: 'Relevance'
+    value: 'relevance'
   },
-  // {
-  //   label: 'Date',
-  //   value: 'Date'
-  // },
   {
     label: 'Дешевле',
-    value: 'Price Low to High'
+    value: 'low'
   }, {
     label: 'Дороже',
-    value: 'Price High to Low'
+    value: 'high'
   }
 ];
+
+const getSortItems = (arr = [], prop) => {
+  let items = [...arr];
+  if (prop === 'high') {
+    items = [...arr].sort((a, b) => b.price - a.price);
+  } else if (prop.value === 'low') {
+    items = [...arr].sort((a, b) => a.price - b.price);
+  }
+  return items;
+};
+
 export default function ProductSearchPageView(props) {
   const categories = props.categories;
+  const parentCategory = props.parentCategory;
   const [view, setView] = useState('grid');
   const downMd = useMediaQuery(theme => theme.breakpoints.down('md'));
   const toggleView = useCallback(v => () => setView(v), []);
   const PRODUCTS = productDatabase.slice(95, 104);
+  const linkToParent = parentCategory?.parent === '00000000-0000-0000-0000-000000000000';
+  // const linkToParent = parentCategory.parent === '00000000-0000-0000-0000-000000000000' ? parentCategory.title : <Link href={`/products/search/${parentCategory.refKey}`}>parentCategory.title</Link>
   // const navigationList = await api.getNavigationList();
   // const SideNav = <GrocerySideNav navigation={navigationList} />;
+  const [products, setProducts] = useState([]);
+  const [countCollection, setCountCollection] = useState(0);
+  const [searchTitle, setSearchTitle] = useState('');
+  const [sortValue, setSortValue] = useState(SORT_OPTIONS[0].value);
+  const [page, setPage] = useState(1);
+  const [load, setLoad] = useState(false);
+  useEffect(() => {
+    // setProducts(getSortItems(props.products, sortValue));
+    setProducts(props.products);
+    setCountCollection(props.countCollection);
+    setSearchTitle(props.searchTitle);
+  }, [props.products]);
+
+  const handleChangeSortFilterProducts = async (page_ = 1, valueSort, isSort = false) => {
+    try {
+      const newPage = isSort ? 1 : page_;
+      await setLoad(true);
+      const path = `/api/products/${products[0].parent}?page=${newPage}&sort=${valueSort || sortValue}`;
+      const searchPath = `/api/products/search?title=${searchTitle}&page=${newPage}&sort=${valueSort || sortValue}`;
+      //searchTitle
+      const response = await fetch(searchTitle ? searchPath : path);
+      const result = await response.json();
+      const newProducts = viewProductsCategoryDataBae(result.products);
+      setProducts(newProducts);
+      setPage(newPage);
+      setLoad(false);
+    } catch (e) {
+      console.log('Ошибка в запросе onChange в компоненте product-grid-view', e);
+    }
+
+  };
+
+  const handleChangeSort = async e => {
+    e.preventDefault();
+    // const items = getSortItems(props.products, e.target.value);
+    // setProducts(items);
+    setSortValue(e.target.value);
+    await handleChangeSortFilterProducts(page, e.target.value, true);
+  };
+
   return <Container className="mt-2 mb-3">
     {
       /* FILTER ACTION AREA */
@@ -69,62 +122,96 @@ export default function ProductSearchPageView(props) {
       }
     }}>
       <div>
-        <H5>Наименование категории</H5>
-        {categories.length ? null : <Paragraph color="grey.600">{props.countCollection || 0} товаров</Paragraph>}
+        {props.searchTitle && <H5>Вот, что мы нашли по запросу: {props.searchTitle}</H5>}
+        {parentCategory?.title && <H5>{parentCategory.title}</H5>}
+        {/*<H5>{props.searchTitle ? `Вот, что мы нашли по запросу: ${props.searchTitle}` : `Наименование категории ${parentCategory.title}`}</H5>*/}
+        {categories?.length ? <Paragraph color="grey.600">Выберите раздел</Paragraph> :
+          <Paragraph color="grey.600">{countCollection || 0} товаров</Paragraph>}
+        {/*<Paragraph color="grey.600">{!categories?.length ? 'Выберите раздел' : count}</Paragraph>*/}
       </div>
 
-      {categories.length
-        ? null
-        : <FlexBox alignItems="center" columnGap={4} flexWrap="wrap" my="0.5rem">
+      {/*{setSearchTitle*/}
+      {/*  ? null*/}
+      {/*:*/}
 
-          <FlexBox alignItems="center" gap={1} flex="1 1 0">
-            <Paragraph color="grey.600" whiteSpace="pre">
-              Фильтры:
-            </Paragraph>
-
-            <TextField select fullWidth size="small" variant="outlined" placeholder="Short by"
-                       defaultValue={SORT_OPTIONS[0].value} sx={{
-              flex: '1 1 0',
-              minWidth: '150px'
-            }}>
-              {SORT_OPTIONS.map(item => <MenuItem value={item.value} key={item.value}>
-                {item.label}
-              </MenuItem>)}
-            </TextField>
+      {/*}*/}
+      {products?.length
+        ? <Fragment>
+          <FlexBox alignItems="center" columnGap={4} flexWrap="wrap" my="0.5rem">
+            <FlexBox alignItems="center" gap={1} flex="1 1 0">
+              <Paragraph color="grey.600" whiteSpace="pre">
+                На сайте указаны базовые цены, не является афертой.
+              </Paragraph>
+            </FlexBox>
           </FlexBox>
+          <FlexBox alignItems="center" columnGap={4} flexWrap="wrap" my="0.5rem">
 
-          <FlexBox alignItems="center" my="0.25rem">
-            <Paragraph color="grey.600" mr={1}>
-              Вид:
-            </Paragraph>
+            <FlexBox alignItems="center" gap={1} flex="1 1 0">
+              <Paragraph color="grey.600" whiteSpace="pre">
+                Фильтры:
+              </Paragraph>
 
-            <IconButton onClick={toggleView('grid')}>
-              <Apps color={view === 'grid' ? 'primary' : 'inherit'} fontSize="small"/>
-            </IconButton>
+              <TextField onChange={handleChangeSort} select fullWidth size="small" variant="outlined"
+                         placeholder="Short by"
+                         value={sortValue} sx={{
+                flex: '1 1 0',
+                minWidth: '150px'
+              }}>
+                {SORT_OPTIONS.map(item => <MenuItem value={item.value} key={item.value}>
+                  {item.label}
+                </MenuItem>)}
+              </TextField>
+            </FlexBox>
 
-            <IconButton onClick={toggleView('list')}>
-              <ViewList color={view === 'list' ? 'primary' : 'inherit'} fontSize="small"/>
-            </IconButton>
+            <FlexBox alignItems="center" my="0.25rem">
+              {/*<Paragraph color="grey.600" mr={1}>*/}
+              {/*  Вид:*/}
+              {/*</Paragraph>*/}
 
-            {
-              /* SHOW IN THE SMALL DEVICE */
-            }
-            {/*{downMd && <Sidenav handler={close => <IconButton onClick={close}>*/}
-            {/*  <FilterList fontSize="small"/>*/}
-            {/*</IconButton>}>*/}
-            {/*  <ProductFilterCard/>*/}
-            {/*</Sidenav>}*/}
+              {/*<IconButton onClick={toggleView('grid')}>*/}
+              {/*  <Apps color={view === 'grid' ? 'primary' : 'inherit'} fontSize="small"/>*/}
+              {/*</IconButton>*/}
+
+              {/*<IconButton onClick={toggleView('list')}>*/}
+              {/*  <ViewList color={view === 'list' ? 'primary' : 'inherit'} fontSize="small"/>*/}
+              {/*</IconButton>*/}
+
+              {
+                // /* SHOW IN THE SMALL DEVICE */
+              }
+              {/*{downMd && <Sidenav handler={close => <IconButton onClick={close}>*/}
+              {/*  <FilterList fontSize="small"/>*/}
+              {/*</IconButton>}>*/}
+              {/*  <ProductFilterCard/>*/}
+              {/*</Sidenav>}*/}
+            </FlexBox>
           </FlexBox>
-        </FlexBox>
+        </Fragment>
+        : null
       }
+
+
+      {/*}*/}
 
 
     </Card>
 
-    {categories.length
+    {categories?.length
       ? <Section3 categories={categories}/>
       : <Grid item md={12} xs={12}>
-        {view === 'grid' ? <ProductsGridView products={props.products} slug={props.slug} countCollection={props.countCollection}/> : <ProductsListView products={props.products} slug={props.slug} countCollection={props.countCollection}/>}
+        {view === 'grid' ?
+          <ProductsGridView page={page}
+                            setPage={setPage}
+                            load={load}
+                            setLoad={setLoad}
+                            sortValue={sortValue}
+                            products={products}
+                            slug={props.slug}
+                            countCollection={countCollection}
+                            searchTitle={searchTitle}
+                            handleChangeSortFilterProducts={handleChangeSortFilterProducts}/> :
+          <ProductsListView products={products} slug={props.slug} countCollection={countCollection}
+                            searchTitle={searchTitle}/>}
         {/*{view === 'grid' ? <ProductsGridView products={PRODUCTS} slug={props.slug}/> : <ProductsListView products={PRODUCTS} slug={props.slug}/>}*/}
       </Grid>
     }

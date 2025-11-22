@@ -19,9 +19,13 @@ export default function DeliveryDate({
     let list = [];
     let today = new Date();
     let dateCount = today.getDate();
+    // list.push({
+    //   label: format(today, "dd MMMM", {locale: ru}),
+    //   value: today.toISOString()
+    // });
     list.push({
-      label: format(today, "dd MMMM", {locale: ru}),
-      value: today.toISOString()
+      label: 'как можно скорее',
+      value: 'как можно скорее'
     });
 
     for (let i = 1; i < 10; i++) {

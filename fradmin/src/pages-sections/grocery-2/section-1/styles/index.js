@@ -13,8 +13,8 @@ export const StyledGrid = styled(Grid)(({
   position: "relative",
   alignItems: "center",
   display: "flex !important",
-  padding: "2rem 1rem 5rem 2.5rem",
-  backgroundColor: theme.palette.primary.main,
+  // padding: "2rem 1rem 5rem 2.5rem",
+  // backgroundColor: theme.palette.primary.main,
   ...(theme.direction === "rtl" && {
     padding: "2rem 2.5rem 5rem 1rem"
   }),
@@ -22,6 +22,21 @@ export const StyledGrid = styled(Grid)(({
     flexDirection: "column-reverse"
   }
 }));
+// export const StyledGrid = styled(Grid)(({
+//                                           theme
+//                                         }) => ({
+//   position: "relative",
+//   alignItems: "center",
+//   display: "flex !important",
+//   padding: "2rem 1rem 5rem 2.5rem",
+//   backgroundColor: theme.palette.primary.main,
+//   ...(theme.direction === "rtl" && {
+//     padding: "2rem 2.5rem 5rem 1rem"
+//   }),
+//   [theme.breakpoints.down("sm")]: {
+//     flexDirection: "column-reverse"
+//   }
+// }));
 export const GridItemOne = styled(Grid)({
   color: "white"
 });

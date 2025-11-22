@@ -60,9 +60,9 @@ export default function MobileHeader() {
             <Icon.Search sx={ICON_STYLE} />
           </IconButton>
 
-          <IconButton onClick={toggleDialog}>
-            <Icon.User sx={ICON_STYLE} />
-          </IconButton>
+          {/*<IconButton onClick={toggleDialog}>*/}
+          {/*  <Icon.User sx={ICON_STYLE} />*/}
+          {/*</IconButton>*/}
 
           <Badge badgeContent={state.cart.length} color="primary">
             <IconButton onClick={toggleSidenav}>
