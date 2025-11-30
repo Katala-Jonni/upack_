@@ -61,21 +61,21 @@ export default async function GroceryTwoPageView() {
       {
         /* FEATURED ITEMS AREA */
       }
-      <ProductCarousel title="Популярные товары" products={featuredProducts}/>
+      {/*<ProductCarousel title="Популярные товары" products={featuredProducts}/>*/}
 
       {
         /* BEST SELLER IN YOUR AREA */
       }
-      <ProductCarousel title="Выгодные предложения" products={bestSellProducts}/>
+      {/*<ProductCarousel title="Выгодные предложения" products={bestSellProducts}/>*/}
 
 
       {/* BEST OF HOME ESSENTIALS PRODUCTS AREA  */}
-      <PartnerCarousel title="Наши партнеры" products={bestHomeProducts}/>
+      {/*<PartnerCarousel title="Наши партнеры" products={bestHomeProducts}/>*/}
 
       {
         /* DISCOUNT BANNER AREA */
       }
-      <Section4 cardList={discountBanners}/>
+      {/*<Section4 cardList={discountBanners}/>*/}
     </Container>
     {
       /* TOP HERO AREA */
@@ -112,7 +112,7 @@ export default async function GroceryTwoPageView() {
     {
       /* POPUP NEWSLETTER FORM */
     }
-    <Newsletter image="/assets/images/newsletter/bg-2.png"/>
+    {/*<Newsletter image="/assets/images/newsletter/bg-2.png"/>*/}
 
     {
       /* SMALL DEVICE BOTTOM NAVIGATION */
