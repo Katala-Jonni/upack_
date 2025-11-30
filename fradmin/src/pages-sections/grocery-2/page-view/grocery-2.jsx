@@ -81,7 +81,6 @@ export default async function GroceryTwoPageView() {
       /* TOP HERO AREA */
     }
 
-
     {
       /* BEST OF HOME ESSENTIALS PRODUCTS AREA  */
     }
