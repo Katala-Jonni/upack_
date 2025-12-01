@@ -8,7 +8,7 @@ server {
     listen 443 ssl http2;
     server_name upack10.ru;
 
-    ssl_certificate /etc/letsencrypt/live/upack10.ruu/fullchain.pem;
+    ssl_certificate /etc/letsencrypt/live/upack10.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/upack10.ru/privkey.pem;
 
     location / {
