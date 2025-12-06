@@ -4,13 +4,13 @@ import api from '../../../../../utils/__api__/grocery-2';
 import { notFound } from 'next/navigation';
 
 export const metadata = {
-  title: 'Product Search - Bazaar Next.js E-commerce Template',
-  description: `Bazaar is a React Next.js E-commerce template. Build SEO friendly Online store, delivery app and Multi vendor store`,
+  title: "ЮПАК Петрозаводск",
+  description: `ЮПАК Петрозаводск Карелия - оптовые продажи для направлений медицина, бьюти сфера, общепит. Одноразовая посуда, хоз товары, пакеты, перчатки в Петрозаводске`,
   authors: [{
-    name: 'UI-LIB',
-    url: 'https://ui-lib.com'
+    name: "KJ",
+    url: "https://upack-10.ru/"
   }],
-  keywords: ['e-commerce', 'e-commerce template', 'next.js', 'react']
+  keywords: ["хоз товары", "пакеты", "перчатки", "юпак Петрозаводск"]
 };
 export default async function ProductSearch({ params }) {
   try {
