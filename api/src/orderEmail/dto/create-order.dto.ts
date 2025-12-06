@@ -37,7 +37,6 @@ export class CreateOrderDto {
   readonly organization: string;
   @IsOptional()
   @IsString()
-  @MinLength(4)
   @MaxLength(200)
   readonly comment?: string;
   @IsNotEmpty()
