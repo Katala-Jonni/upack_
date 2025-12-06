@@ -11,11 +11,16 @@ import Link from 'next/link';
 import Card from '@mui/material/Card';
 import { Paragraph } from '../../../components/Typography';
 import React from 'react';
+import { useState, useEffect } from 'react';
 
 export default function CartPageView() {
+  const [cartState, setCartState] = useState([]);
   const {
     state
   } = useCart();
+  useEffect(() => {
+    setCartState(state.cart)
+  });
   // if (!state.cart || !state.cart.length) {
   //   return <Grid item md={12} xs={12}>
   //     <Paragraph>Ваша корзина пуста</Paragraph>
@@ -37,7 +42,8 @@ export default function CartPageView() {
       /* CART PRODUCT LIST */
     }
     <Grid container item md={12} xs={12}>
-      {state.cart.map(({
+      {/*{state.cart.map(({*/}
+      {cartState.map(({
                          name,
                          id,
                          price,
