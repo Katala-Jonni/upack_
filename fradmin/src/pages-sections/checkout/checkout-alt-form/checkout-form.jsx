@@ -80,32 +80,32 @@ export default function CheckoutForm() {
     };
     try {
       // const res = await fetchApi.create(`${routes.order}`, values);
-      const res = await  fetch(`api${routes.order}`, {
-        method: 'POST', // Specify the HTTP method as POST
-        headers: {
-          'Content-Type': 'application/json' // Indicate that the body contains JSON data
-        },
-        body: JSON.stringify({order}) // Convert the JavaScript object to a JSON string
-      })
-        // .then(response => {
-        //   if (!response.ok) {
-        //     throw new Error(`HTTP error! status: ${response.status}`);
-        //   }
-        //   return response.json(); // Parse the JSON response from the server
-        // })
-        .then(data => {
-          console.log('Success:', data); // Handle the successful response data
-        })
-        .catch(error => {
-          console.error('Error:', error); // Handle any errors during the fetch operation
-        });
+      // const res = await fetch(`api${routes.order}`, {
+      //   method: 'POST', // Specify the HTTP method as POST
+      //   headers: {
+      //     'Content-Type': 'application/json' // Indicate that the body contains JSON data
+      //   },
+      //   body: JSON.stringify({order}) // Convert the JavaScript object to a JSON string
+      // })
+      //   // .then(response => {
+      //   //   if (!response.ok) {
+      //   //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   //   }
+      //   //   return response.json(); // Parse the JSON response from the server
+      //   // })
+      //   .then(data => {
+      //     console.log('Success:', data); // Handle the successful response data
+      //   })
+      //   .catch(error => {
+      //     console.error('Error:', error); // Handle any errors during the fetch operation
+      //   });
+      const res = await fetchApi.create(`${routes.order}`, {order});
+      console.log('handleFormSubmitOrder', res);
       // console.log('startLoadCategory', res.data);
       // return res.data;
     } catch (e) {
       console.error('startLoadCategory', e);
     }
-    // const res = await fetchApi.create(`${routes.order}`, values);
-    // console.log('handleFormSubmitOrder', res);
     // dispatch({
     //   type: 'REMOVE_CART_AMOUNT',
     //   payload: []
