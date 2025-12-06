@@ -92,7 +92,7 @@ export class OrderService {
             const response = await axios.post(new URL(urlEmail).toString(), { ...dataEmail }, { headers: headerEmail });
             console.log(response?.data)
         } catch (e) {
-            console.log('OrderService', e?.data);
+            console.log('OrderService', e?.message);
         }
 
         return {
