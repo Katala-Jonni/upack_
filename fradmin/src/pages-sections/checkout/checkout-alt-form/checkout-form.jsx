@@ -17,6 +17,8 @@ import { log } from 'next/dist/server/typescript/utils';
 import { deleteStorage, storageKey } from '../../../storage';
 import useCart from '../../../hooks/useCart';
 import { Paragraph } from '../../../components/Typography';
+import { fetchApi } from '../../../api/fetch';
+import { routes } from '../../../api/routes';
 
 const checkoutSchema = yup.object().shape({
   date: yup.string().required('Укажите желаемую дату доставки'),
@@ -62,6 +64,8 @@ export default function CheckoutForm() {
     // if (error) return false;
     console.log('valuesCheckout-alt-form', values);
     console.log('valuesCheckout-alt-formdata', data);
+    const res = await fetchApi.create(routes.order, values);
+    console.log('handleFormSubmitOrder', res);
     // dispatch({
     //   type: 'REMOVE_CART_AMOUNT',
     //   payload: []
