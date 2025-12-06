@@ -64,8 +64,48 @@ export default function CheckoutForm() {
     // if (error) return false;
     console.log('valuesCheckout-alt-form', values);
     console.log('valuesCheckout-alt-formdata', data);
-    const res = await fetchApi.create(routes.order, values);
-    console.log('handleFormSubmitOrder', res);
+    const cart =  [
+      {
+        "count": 50,
+        "id": "0865fc4c-056c-11ef-81b8-fa163eb77d5d",
+        "imgUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAA",
+        "name": "Форма алюминиевая, прямоугольная, L-край, 217 х 133 мм, 865 мл, 50 шт.",
+        "price": 10.43,
+        "qty": 50
+      }
+    ];
+    const order = {
+      ...values,
+      cart
+    };
+    try {
+      // const res = await fetchApi.create(`${routes.order}`, values);
+      const res = await  fetch(`api${routes.order}`, {
+        method: 'POST', // Specify the HTTP method as POST
+        headers: {
+          'Content-Type': 'application/json' // Indicate that the body contains JSON data
+        },
+        body: JSON.stringify({order}) // Convert the JavaScript object to a JSON string
+      })
+        // .then(response => {
+        //   if (!response.ok) {
+        //     throw new Error(`HTTP error! status: ${response.status}`);
+        //   }
+        //   return response.json(); // Parse the JSON response from the server
+        // })
+        .then(data => {
+          console.log('Success:', data); // Handle the successful response data
+        })
+        .catch(error => {
+          console.error('Error:', error); // Handle any errors during the fetch operation
+        });
+      // console.log('startLoadCategory', res.data);
+      // return res.data;
+    } catch (e) {
+      console.error('startLoadCategory', e);
+    }
+    // const res = await fetchApi.create(`${routes.order}`, values);
+    // console.log('handleFormSubmitOrder', res);
     // dispatch({
     //   type: 'REMOVE_CART_AMOUNT',
     //   payload: []
