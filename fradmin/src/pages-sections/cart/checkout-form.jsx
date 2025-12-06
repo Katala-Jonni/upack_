@@ -1,4 +1,5 @@
 import Link from "next/link"; // MUI
+import { useState, useEffect } from 'react';
 
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -17,11 +18,16 @@ import countryList from "data/countryList"; // CUSTOM UTILS LIBRARY FUNCTION
 import { currency } from "lib";
 import Heading from '../checkout/checkout-alt-form/heading';
 export default function CheckoutForm() {
+
+  const [cartState, setCartState] = useState([]);
   const {
     state
   } = useCart();
+  useEffect(() => {
+    setCartState(state.cart)
+  });
 
-  const getTotalPrice = () => state.cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const getTotalPrice = () => cartState.reduce((acc, item) => acc + item.price * item.qty, 0);
 
   const STATE_LIST = [{
     value: "new-york",

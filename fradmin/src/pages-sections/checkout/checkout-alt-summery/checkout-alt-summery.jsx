@@ -1,5 +1,5 @@
 'use client';
-
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider'; // GLOBAL CUSTOM COMPONENTS
 
@@ -11,10 +11,14 @@ import CartItem from './cart-item';
 import ListItem from '../list-item';
 
 export default function CheckoutAltSummary() {
+  const [cartState, setCartState] = useState([]);
   const {
     state
   } = useCart();
-  const totalSum = state.cart.reduce((accum, item) => {
+  useEffect(() => {
+    setCartState(state.cart)
+  });
+  const totalSum = cartState.reduce((accum, item) => {
     return accum + (item.qty * item.price);
   }, 0);
   return <div>
@@ -22,7 +26,7 @@ export default function CheckoutAltSummary() {
       Ваш заказ
     </Paragraph>
 
-    {state.cart.map(({
+    {cartState.map(({
                        name,
                        qty,
                        price,
