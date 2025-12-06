@@ -73,14 +73,14 @@ export class OrderService {
 
     async create(createOrderDto: CreateOrderDto): Promise<any> {
         console.log('OrderServiceCreateOrderDto', createOrderDto);
-        console.log('process.env.secretAccessKeyMailopost', process.env.secretAccessKeyMailopost)
+        // console.log('process.env.secretAccessKeyMailopost', process.env.secretAccessKeyMailopost);
         const urlEmail = 'https://api.mailopost.ru/v1/email/messages';
 
         const dataEmail = {
             from_email: "u_pack@internet.ru",
             from_name: "ЮПАК",
-            to: "katala.jonni@yandex.ru",
-            subject: "Поступил заказ с сайта №1",
+            to: "u_pack@internet.ru",
+            subject: "Поступил заказ с сайта",
             text: "Заказ позиции",
             html: "<h1>Заказ в разметке</h1>"
         };

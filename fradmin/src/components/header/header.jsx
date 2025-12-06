@@ -70,7 +70,7 @@ export default function Header({
     }
     <FlexBox minWidth={100} alignItems="center">
       <Link href="/">
-        <img src='/assets/images/logo-main.svg' alt="ЮПАК-27-02-08" width='80px' height='58px' title="ЮПАК-27-02-08" style={{
+        <img src='/assets/images/logo-main.svg' alt="ЮПАК-27-02-08" title="ЮПАК-27-02-08" style={{
           cursor: 'pointer'
         }}/>
         {/*<LazyImage src={require('../../../public/assets/images/logo-main.svg')} alt="ЮПАК-27-02-08" width='105px' height='50px'/>*/}

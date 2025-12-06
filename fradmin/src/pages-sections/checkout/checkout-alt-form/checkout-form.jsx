@@ -62,12 +62,12 @@ export default function CheckoutForm() {
     // if (error) return false;
     console.log('valuesCheckout-alt-form', values);
     console.log('valuesCheckout-alt-formdata', data);
-    dispatch({
-      type: 'REMOVE_CART_AMOUNT',
-      payload: []
-    });
-    localStorage.removeItem(storageKey);
-    data.resetForm({});
+    // dispatch({
+    //   type: 'REMOVE_CART_AMOUNT',
+    //   payload: []
+    // });
+    // localStorage.removeItem(storageKey);
+    // data.resetForm({});
     // router.push('/');
     // router.push("/payment");
   };
