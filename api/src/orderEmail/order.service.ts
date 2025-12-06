@@ -90,17 +90,28 @@ export class OrderService {
         };
         try {
             const response = await axios.post(new URL(urlEmail).toString(), { ...dataEmail }, { headers: headerEmail });
-            console.log(response?.data)
+            console.log(response?.data);
+            return {
+                order: {
+                    error: false,
+                    message: response?.data
+                }
+            };
         } catch (e) {
-            console.log('OrderService', e?.message);
+            return {
+                order: {
+                    error: true,
+                    message: e?.message
+                }
+            };
         }
 
-        return {
-            order: {
-                error: false,
-                message: 'ok'
-            }
-        };
+        // return {
+        //     order: {
+        //         error: false,
+        //         message: 'ok'
+        //     }
+        // };
         // return 'OrderServiceCreateOrderDto';
         // async create(createOrderDto: CreateOrderDto): Promise<OrderCreateInterface> {
         // const session = await this.connection.startSession();
