@@ -59,7 +59,7 @@ export default function CartPageView() {
     </Grid>
 
     <Grid item md={12} xs={12}>
-      {state.cart.length
+      {cartState.length
         ? <Button color="primary" href="/checkout-alternative" variant="contained" LinkComponent={Link}>
           Оформить заказ
         </Button>

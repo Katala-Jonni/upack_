@@ -1,32 +1,41 @@
-import Badge from "@mui/material/Badge";
-import IconButton from "@mui/material/IconButton"; // MUI ICON COMPONENT
+import React, { useEffect, useState } from 'react';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton'; // MUI ICON COMPONENT
 
-import PersonOutline from "@mui/icons-material/PersonOutline"; // CUSTOM ICON COMPONENT
+import PersonOutline from '@mui/icons-material/PersonOutline'; // CUSTOM ICON COMPONENT
 
-import ShoppingBagOutlined from "icons/ShoppingBagOutlined"; // GLOBAL CUSTOM HOOK
+import ShoppingBagOutlined from 'icons/ShoppingBagOutlined'; // GLOBAL CUSTOM HOOK
 
-import useCart from "hooks/useCart"; // ==============================================================
+import useCart from 'hooks/useCart'; // ==============================================================
 
 // ==============================================================
 export default function LoginCartButtons({
-  toggleDialog,
-  toggleSidenav
-}) {
+                                           toggleDialog,
+                                           toggleSidenav
+                                         }) {
+  const [cartState, setCartState] = useState([]);
   const {
     state
   } = useCart();
+  useEffect(() => {
+    setCartState(state.cart);
+  });
+
+
   const ICON_COLOR = {
-    color: "grey.600"
+    color: 'grey.600'
   };
   return <div>
-      {/*<IconButton onClick={toggleDialog}>*/}
-      {/*  <PersonOutline sx={ICON_COLOR} />*/}
-      {/*</IconButton>*/}
-
-      <Badge badgeContent={state.cart.length} color="primary">
+    {/*<IconButton onClick={toggleDialog}>*/}
+    {/*  <PersonOutline sx={ICON_COLOR} />*/}
+    {/*</IconButton>*/}
+    {cartState.length
+      ? <Badge badgeContent={cartState.length} color="primary">
         <IconButton onClick={toggleSidenav}>
-          <ShoppingBagOutlined sx={ICON_COLOR} />
+          <ShoppingBagOutlined sx={ICON_COLOR}/>
         </IconButton>
       </Badge>
-    </div>;
+      : null
+    }
+  </div>;
 }
