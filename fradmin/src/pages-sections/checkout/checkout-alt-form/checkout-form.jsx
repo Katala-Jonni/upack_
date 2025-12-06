@@ -80,27 +80,28 @@ export default function CheckoutForm() {
     };
     try {
       // const res = await fetchApi.create(`${routes.order}`, values);
-      const res = await fetch('https://upack-10.ru/api/order', {
-        method: 'POST', // Specify the HTTP method as POST
-        headers: {
-          'Content-Type': 'application/json' // Indicate that the body contains JSON data
-        },
-        body: JSON.stringify({order}) // Convert the JavaScript object to a JSON string
-      })
-        // .then(response => {
-        //   if (!response.ok) {
-        //     throw new Error(`HTTP error! status: ${response.status}`);
-        //   }
-        //   return response.json(); // Parse the JSON response from the server
-        // })
-        .then(data => {
-          console.log('Success:', data); // Handle the successful response data
-        })
-        .catch(error => {
-          console.error('Error:', error); // Handle any errors during the fetch operation
-        });
-      // const res = await fetchApi.create(`${routes.order}`, {order});
-      // console.log('handleFormSubmitOrder', res);
+      // const res = await fetch('https://upack-10.ru/api/order', {
+      //   method: 'POST', // Specify the HTTP method as POST
+      //   headers: {
+      //     'Content-Type': 'application/json' // Indicate that the body contains JSON data
+      //   },
+      //   body: JSON.stringify({order}) // Convert the JavaScript object to a JSON string
+      // })
+      //   // .then(response => {
+      //   //   if (!response.ok) {
+      //   //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   //   }
+      //   //   return response.json(); // Parse the JSON response from the server
+      //   // })
+      //   .then(data => {
+      //     console.log('Success:', data); // Handle the successful response data
+      //   })
+      //   .catch(error => {
+      //     console.error('Error:', error); // Handle any errors during the fetch operation
+      //   });
+      const res = await fetchApi.create(`${routes.order}`, {order});
+      const data = await res.json();
+      console.log('handleFormSubmitOrder', data);
       // console.log('startLoadCategory', res.data);
       // return res.data;
     } catch (e) {
