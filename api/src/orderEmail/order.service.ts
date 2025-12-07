@@ -77,7 +77,7 @@ export class OrderService {
         const urlEmail = 'https://api.mailopost.ru/v1/email/messages';
 
         const dataEmail = {
-            from_email: "u_pack@internet.ru",
+            from_email: "info@upack-10.ru",
             from_name: "ЮПАК",
             to: "u_pack@internet.ru",
             subject: "Поступил заказ с сайта",
