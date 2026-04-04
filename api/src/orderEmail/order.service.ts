@@ -111,7 +111,7 @@ export class OrderService {
             from_email: "info@upack-10.ru",
             from_name: "ЮПАК",
             to: "upack-10@mail.ru",
-            subject: "Поступил заказ с сайта",
+            subject: "Поступил заказ с сайта новый",
             text: "Заказ позиции",
             html: "<h1>Заказ в разметке</h1>"
         };
