@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import axios from 'axios';
@@ -68,22 +68,22 @@ const populateQuery = [
 export class OrderService {
     constructor(
         @InjectModel(Order.name) private readonly orderRepository: Model<OrderDocument>,
-        private readonly mailerService: MailerService,
+        // private readonly mailerService: MailerService,
         @InjectConnection() private readonly connection: Connection
     ) {
     }
 
-    async sendEmail(userEmail: string, name: string, code: string) {
-        await this.mailerService.sendMail({
-            to: userEmail,
-            subject: 'Поступил заказ с сайта',
-            template: './email', // Имя файла шаблона без расширения
-            context: { // Переменные для шаблона
-                name: name,
-                code: code,
-            },
-        });
-    }
+    // async sendEmail(userEmail: string, name: string, code: string) {
+    //     await this.mailerService.sendMail({
+    //         to: userEmail,
+    //         subject: 'Поступил заказ с сайта',
+    //         template: './email', // Имя файла шаблона без расширения
+    //         context: { // Переменные для шаблона
+    //             name: name,
+    //             code: code,
+    //         },
+    //     });
+    // }
 
     async create(createOrderDto: CreateOrderDto): Promise<any> {
         console.log('OrderServiceCreateOrderDto', createOrderDto);
