@@ -79,7 +79,7 @@ export class OrderService {
         const dataEmail = {
             from_email: "info@upack-10.ru",
             from_name: "ЮПАК",
-            to: "u_pack@internet.ru",
+            to: "upack-10@mail.ru",
             subject: "Поступил заказ с сайта",
             text: "Заказ позиции",
             html: "<h1>Заказ в разметке</h1>"
