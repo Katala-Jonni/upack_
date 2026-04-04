@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import axios from 'axios';
@@ -67,19 +68,49 @@ const populateQuery = [
 export class OrderService {
     constructor(
         @InjectModel(Order.name) private readonly orderRepository: Model<OrderDocument>,
+        private readonly mailerService: MailerService,
         @InjectConnection() private readonly connection: Connection
     ) {
     }
 
+    async sendEmail(userEmail: string, name: string, code: string) {
+        await this.mailerService.sendMail({
+            to: userEmail,
+            subject: 'Поступил заказ с сайта',
+            template: './email', // Имя файла шаблона без расширения
+            context: { // Переменные для шаблона
+                name: name,
+                code: code,
+            },
+        });
+    }
+
     async create(createOrderDto: CreateOrderDto): Promise<any> {
         console.log('OrderServiceCreateOrderDto', createOrderDto);
+        // try {
+        //     await this.sendEmail( 'katala.jonni@yandex.ru', 'Max', '12345') // Пример кода подтверждения );
+        //         return {
+        //             order: {
+        //                 error: false,
+        //                 message: 'Сообщение отпарвлено!'
+        //             }
+        //         };
+        // } catch (e) {
+        //         return {
+        //             order: {
+        //                 error: true,
+        //                 message: e?.message
+        //             }
+        //         };
+        // }
+
         // console.log('process.env.secretAccessKeyMailopost', process.env.secretAccessKeyMailopost);
         const urlEmail = 'https://api.mailopost.ru/v1/email/messages';
 
         const dataEmail = {
             from_email: "info@upack-10.ru",
             from_name: "ЮПАК",
-            to: "u_pack@internet.ru",
+            to: "upack-10@mail.ru",
             subject: "Поступил заказ с сайта",
             text: "Заказ позиции",
             html: "<h1>Заказ в разметке</h1>"
