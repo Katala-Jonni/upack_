@@ -28,6 +28,9 @@ export class CreateOrderDto {
   readonly time: string;
   @IsNotEmpty()
   @IsString()
+  readonly date: string;
+  @IsNotEmpty()
+  @IsString()
   @MinLength(4)
   @MaxLength(100)
   readonly address: string;

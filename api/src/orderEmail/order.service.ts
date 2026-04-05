@@ -86,7 +86,30 @@ export class OrderService {
     // }
 
     async create(createOrderDto: CreateOrderDto): Promise<any> {
-        console.log('OrderServiceCreateOrderDto', createOrderDto);
+        // console.log('OrderServiceCreateOrderDto', createOrderDto);
+        const contactInfo = `
+                    <td class="content">
+                        <p>Организация: ${createOrderDto.organization}</p>
+                        <p>Контактное лицо: ${createOrderDto.surname} ${createOrderDto.name}</p>
+                        <p>Номер телефона: ${createOrderDto.phone}</p>
+                        <p>E-mail: ${createOrderDto.email}</p>
+                        <p>Адрес доставки: ${createOrderDto.address}</p>
+                        <p>Дата доставки: ${createOrderDto.date}</p>
+                        <p>Время доставки: ${createOrderDto.time}</p>
+                        <p>Комментарий к заказу: ${createOrderDto.comment.length ? createOrderDto.comment : "нет комментариев к заказу"}</p>
+                    </td>
+        `;
+        const cartHtml = createOrderDto.cart.map(item => {
+            return ` <tr>
+                            <td class="content">${item.name}</td>
+                            <td class="content">${item.qty}</td>
+                            <td class="content">${item.price}</td>
+                            <td class="content">${item.price * item.qty}</td>
+                    </tr>`;
+        }).join();
+        const totalSum = createOrderDto.cart.reduce((accumulator, item) => {
+            return accumulator + (item.price * item.qty);
+        }, 0);
         // try {
         //     await this.sendEmail( 'katala.jonni@yandex.ru', 'Max', '12345') // Пример кода подтверждения );
         //         return {
@@ -113,7 +136,74 @@ export class OrderService {
             to: "upack-10@mail.ru",
             subject: "Поступил заказ с сайта новый",
             text: "Заказ позиции",
-            html: "<h1>Заказ в разметке</h1>"
+            html: `
+            <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Шаблон</title>
+    <style>
+        /* Базовые стили для адаптивности */
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        table { border-collapse: collapse; width: 100%; }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .content { padding: 20px; }
+        .button { background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+<table role="presentation" width="100%">
+    <tr>
+        <td align="center">
+            <table class="container" role="presentation">
+                <!-- Заголовок -->
+                <tr>
+                    <td align="center" style="padding: 20px; background-color: #333333; color: #ffffff;">
+                        <h1>Новый заказ</h1>
+                    </td>
+                </tr>
+                <!-- Контент -->
+                <tr>${contactInfo}</tr>
+                <tr>
+                    <table class="container" role="presentation">
+                        <!-- Заголовок -->
+                        <tr>
+                            <td align="center" style="padding: 20px; background-color: #333333; color: #ffffff;">
+                                <h5>Наименование</h5>
+                            </td>
+                            <td align="center" style="padding: 20px; background-color: #333333; color: #ffffff;">
+                                <h5>Количество</h5>
+                            </td>
+                            <td align="center" style="padding: 20px; background-color: #333333; color: #ffffff;">
+                                <h5>Цена</h5>
+                            </td>
+                            <td align="center" style="padding: 20px; background-color: #333333; color: #ffffff;">
+                                <h5>Сумма</h5>
+                            </td>
+                        </tr>
+                        <!-- Контент -->
+                     ${cartHtml}
+                     <tr>
+                            <td class="content" colspan="2">Итого: ${totalSum} ₽</td>
+                            <td class="content"></td>
+                            <td class="content"></td>
+                        </tr>
+                    </table>
+                </tr>
+                <!-- Футер -->
+                <tr>
+                    <td align="center" style="padding: 10px; background-color: #eeeeee; font-size: 12px;">
+                        <p>&copy; 2026 ООО "ЮПАК"</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+            `
         };
         const headerEmail = {
             'Authorization': `Bearer ${process.env.secretAccessKeyMailopost}`,
@@ -121,7 +211,7 @@ export class OrderService {
         };
         try {
             const response = await axios.post(new URL(urlEmail).toString(), { ...dataEmail }, { headers: headerEmail });
-            console.log(response?.data);
+            // console.log(response?.data);
             return {
                 order: {
                     error: false,

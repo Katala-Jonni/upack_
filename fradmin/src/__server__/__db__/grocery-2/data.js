@@ -150,7 +150,7 @@ export const serviceList = [
     id: '13cc2e20-acd8-481d-8e23-91090ef17109',
     icon: 'ShoppingBagOutlined',
     title: 'Заказ',
-    description: 'от 2 000 ₽'
+    description: 'от 3 000 ₽'
   }]; // top categories
 
 export const categories = [

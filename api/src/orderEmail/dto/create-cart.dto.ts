@@ -5,9 +5,9 @@ import {
 } from 'class-validator';
 
 export class CreateCartDto {
-    @IsInt()
-    @IsNotEmpty()
-    readonly count: number;
+    // @IsInt()
+    // @IsNotEmpty()
+    // readonly count: number;
     @IsNotEmpty()
     readonly price: number;
     @IsInt()
@@ -16,10 +16,10 @@ export class CreateCartDto {
     @IsNotEmpty()
     @IsString()
     readonly name: string;
-    @IsNotEmpty()
-    @IsString()
-    readonly imgUrl: string;
-    @IsNotEmpty()
-    @IsString()
-    readonly id: string;
+    // @IsNotEmpty()
+    // @IsString()
+    // readonly imgUrl: string;
+    // @IsNotEmpty()
+    // @IsString()
+    // readonly id: string;
 }
