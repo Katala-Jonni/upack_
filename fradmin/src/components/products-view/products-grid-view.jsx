@@ -26,14 +26,17 @@ export default function ProductsGridView({
                                            ...props
                                          }) {
   const [prod, setProd] = useState([]);
-  // const [load, setLoad] = useState(false);
+  // const [load, setLoad] = useState(true);
+  // console.log('load', load);
+  // console.log('products.length', products);
 
   // useEffect(() => {
-  //   setProd(products);
+  //   // setProd(products);
   //   // return () => {
   //   //   setPage(1);
   //   // };
-  // }, [products]);
+  //   // setLoad(false);
+  // }, []);
 
   const onChange = async (event, page) => {
     try {
@@ -67,7 +70,7 @@ export default function ProductsGridView({
   };
 
   return <Fragment>
-    {load
+    {load || !products.length
       ? <Loading/>
       : <Grid container spacing={3}>
         {products.map(item => <Grid item lg={3} md={3} sm={6} xs={6} key={item.id}>
