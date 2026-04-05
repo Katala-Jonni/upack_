@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import useTheme from '@mui/material/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import clsx from 'clsx'; // LOCAL CUSTOM HOOKS
@@ -40,6 +40,8 @@ export default function Header({
     dispatch
   } = useCategories();
 
+  const [isLoading, setLoading] = useState(false);
+
   useEffect(() => {
     const url = `/api${routes.rootCategories}`;
 
@@ -56,6 +58,7 @@ export default function Header({
             categories: result.categories
           }
         });
+        setLoading(true);
       } catch (error) {
         console.log('Header', error);
       }
@@ -104,7 +107,12 @@ export default function Header({
       toggleSidenavClickBtnMiniCart={toggleSidenavClickBtnMiniCart}
     />
   </Fragment>;
-  return <HeaderWrapper className={clsx(className)}>
-    <StyledContainer>{downMd ? <MobileHeader/> : CONTENT_FOR_LARGE_DEVICE}</StyledContainer>
-  </HeaderWrapper>;
+  if (!isLoading){
+    return null;
+  } else {
+    return <HeaderWrapper className={clsx(className)}>
+      <StyledContainer>{downMd ? <MobileHeader/> : CONTENT_FOR_LARGE_DEVICE}</StyledContainer>
+    </HeaderWrapper>;
+  }
+
 }

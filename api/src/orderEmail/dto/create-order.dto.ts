@@ -31,10 +31,10 @@ export class CreateOrderDto {
   @MinLength(4)
   @MaxLength(100)
   readonly address: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @MaxLength(100)
-  readonly organization: string;
+  @MaxLength(200)
+  readonly organization?: string;
   @IsOptional()
   @IsString()
   @MaxLength(200)
