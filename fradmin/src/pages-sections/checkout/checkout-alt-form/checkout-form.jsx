@@ -11,6 +11,8 @@ import DeliveryAddress from './delivery-address';
 import ContactInfo from './contact-info';
 import CommentDetails from './comment-detail';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle'
 import Card from '@mui/material/Card';
 import Link from '@mui/material/Link';
 import { log } from 'next/dist/server/typescript/utils';
@@ -19,6 +21,56 @@ import useCart from '../../../hooks/useCart';
 import { Paragraph } from '../../../components/Typography';
 import { fetchApi } from '../../../api/fetch';
 import { routes } from '../../../api/routes';
+
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+
+function AlertDialog({ isOpen = false}) {
+  console.log('isOpen', isOpen);
+  const [open, setOpen] = React.useState(isOpen);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <React.Fragment>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Open alert dialog
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Use Google's location service?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Let Google help apps determine location.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  );
+}
+
+
+
+
 
 const checkoutSchema = yup.object().shape({
   date: yup.string().required('Укажите желаемую дату доставки'),
@@ -44,6 +96,17 @@ export default function CheckoutForm() {
       return router.push('/');
     }
   });
+  const [open, setOpen] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    dispatch({ type: 'REMOVE_CART_AMOUNT' });
+  };
 
   const toggleHasVoucher = () => setHasVoucher(has => !has);
 
@@ -62,21 +125,29 @@ export default function CheckoutForm() {
   const handleFormSubmit = async (values, data) => {
     // const error = !values.street || !values.phone || !values.mail || !values.date || !values.time;
     // if (error) return false;
-    console.log('valuesCheckout-alt-form', values);
-    console.log('valuesCheckout-alt-formdata', data);
-    const cart =  [
+    // console.log('valuesCheckout-alt-form', values);
+    // console.log('valuesCheckout-alt-formdata', data);
+    // console.log('state.cart', state.cart);
+    const cart = [
       {
-        "count": 50,
-        "id": "0865fc4c-056c-11ef-81b8-fa163eb77d5d",
-        "imgUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAA",
-        "name": "Форма алюминиевая, прямоугольная, L-край, 217 х 133 мм, 865 мл, 50 шт.",
-        "price": 10.43,
-        "qty": 50
+        'count': 50,
+        'id': '0865fc4c-056c-11ef-81b8-fa163eb77d5d',
+        'imgUrl': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAA',
+        'name': 'Форма алюминиевая, прямоугольная, L-край, 217 х 133 мм, 865 мл, 50 шт.',
+        'price': 10.43,
+        'qty': 50
       }
     ];
+    const cartToServer = state.cart.map(el => {
+      return {
+        name: el.name,
+        price: el.price,
+        qty: el.qty
+      };
+    });
     const order = {
       ...values,
-      cart
+      cart: [...cartToServer]
     };
     try {
       // const res = await fetchApi.create(`${routes.order}`, values);
@@ -85,7 +156,7 @@ export default function CheckoutForm() {
         headers: {
           'Content-Type': 'application/json' // Indicate that the body contains JSON data
         },
-        body: JSON.stringify({order}) // Convert the JavaScript object to a JSON string
+        body: JSON.stringify({ order }) // Convert the JavaScript object to a JSON string
       })
         // .then(response => {
         //   if (!response.ok) {
@@ -94,10 +165,21 @@ export default function CheckoutForm() {
         //   return response.json(); // Parse the JSON response from the server
         // })
         .then(data => {
-          console.log('Success:', data); // Handle the successful response data
+          // console.log('Success:', data); // Handle the successful response data
+          // dispatch({ type: 'REMOVE_CART_AMOUNT' });
+          // <AlertDialog isOpen={true}/>
+          handleClickOpen();
+          setSuccess(true);
+          const timerId = setTimeout(() => {
+            // console.log("Сообщение через 1 секунду");
+            dispatch({ type: 'REMOVE_CART_AMOUNT' });
+            clearTimeout(timerId);
+          }, 3000);
         })
         .catch(error => {
           console.error('Error:', error); // Handle any errors during the fetch operation
+          handleClickOpen();
+          setSuccess(false);
         });
       // const res = await fetchApi.create(`${routes.order}`, {order});
       // const data = await res.json();
@@ -149,6 +231,31 @@ export default function CheckoutForm() {
         >
           Оформить заказ
         </Button>
+
+        <Dialog
+          open={open}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {success ? 'Успешно отправлено' : 'Произошла ошибка, повторите снова!'}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {/*<img src='/assets/images/icons/close.svg' alt="ЮПАК-27-02-08" title="ЮПАК-27-02-08" style={{*/}
+              {/*  cursor: 'pointer'*/}
+              {/*}}/>*/}
+              {success ? 'Вы будете перенаправлены на главную страницу...' : null}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button color={success ? 'info' : 'error'} onClick={handleClose} autoFocus>
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         {/*<Button*/}
         {/*  color="primary"*/}
         {/*  href="/cart"*/}

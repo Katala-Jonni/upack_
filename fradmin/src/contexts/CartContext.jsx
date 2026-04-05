@@ -39,9 +39,9 @@ const INITIAL_STATE = {
 export const CartContext = createContext({});
 
 const reducer = (state, action) => {
-  console.log('CartContextCreateContextState', state);
-  console.log('CartContextCreateContextAction', action);
-  console.log('loadStorage(storageKey)', JSON.parse(loadStorage(storageKey)));
+  // console.log('CartContextCreateContextState', state);
+  // console.log('CartContextCreateContextAction', action);
+  // console.log('loadStorage(storageKey)', JSON.parse(loadStorage(storageKey)));
   switch (action.type) {
     case "CHANGE_CART_AMOUNT":
       let cartList = state.cart;
